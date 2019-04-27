@@ -1,2 +1,2 @@
 # zavrsni
-Zavr®ni rad
+Zavr≈°ni rad
