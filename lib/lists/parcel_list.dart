@@ -1,0 +1,43 @@
+import 'package:flutter/material.dart';
+import 'dart:async';
+import 'package:sqflite/sqflite.dart';
+
+import '../models/parcel.dart';
+import '../forms/parcel_form.dart';
+
+// Create a List Widget
+class ParcelList extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return ParcelListState();
+  }
+}
+
+//
+class ParcelListState extends State<ParcelList> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Parcele'),
+      ),
+      // body: getParcelListView(),
+      floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: () {
+            navigateToDetail(Parcel('', 0, ''), 'Dodaj parcelu');
+          }
+          ),
+    );
+  }
+
+  void navigateToDetail(Parcel parcel, String title) async {
+    bool result = await Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return ParcelForm(title, parcel);
+    }));
+
+    // if (result == true) {
+    //   updateListView();
+    // }
+  }
+}
