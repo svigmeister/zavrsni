@@ -23,7 +23,7 @@ class ParcelFormState extends State<ParcelForm> {
   // Note: This is a GlobalKey<FormState>, not a GlobalKey<ParcelFormState>!
   final _parcelFormKey = GlobalKey<FormState>();
 
-  static var _crops = ['Kuruza', 'Paradajz'];
+  static var _crops = ['Kuruza', 'Paradajz', 'Mrkva', 'Pšenica', 'Tikvice'];
   Parcel parcel;
   String appBarTitle;
   TextEditingController parcelNameController = TextEditingController();
@@ -45,6 +45,7 @@ class ParcelFormState extends State<ParcelForm> {
               leading: IconButton(
                   icon: Icon(Icons.arrow_back),
                   onPressed: () {
+                    debugPrint('User clicked back in parcel form');
                     moveToLastScreen();
                   }),
             ),
@@ -61,10 +62,12 @@ class ParcelFormState extends State<ParcelForm> {
                           );
                         }).toList(),
                         style: textStyle,
-                        value: 'Kuruza',
+                        value: parcel.crop,
+                        hint: Text('Odaberite usjev'),
                         onChanged: (valueSelectedByUser) {
                           setState(() {
                             debugPrint('User selected $valueSelectedByUser');
+                            parcel.crop = valueSelectedByUser;
                           });
                         }),
                   ),
@@ -105,6 +108,7 @@ class ParcelFormState extends State<ParcelForm> {
             padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: RaisedButton(
               onPressed: () {
+                debugPrint('User clicked button save in parcel form');
                 // Validate will return true if the form is valid, or false if
                 // the form is invalid.
                 if (_parcelFormKey.currentState.validate()) {

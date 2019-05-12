@@ -25,13 +25,13 @@ class ParcelListState extends State<ParcelList> {
       floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
           onPressed: () {
-            navigateToDetail(Parcel('', 0, ''), 'Dodaj parcelu');
+            navigateToParcelForm(Parcel('Tikvice', 0, 'Mrkva'), 'Dodaj parcelu');
           }
           ),
     );
   }
 
-  void navigateToDetail(Parcel parcel, String title) async {
+  void navigateToParcelForm(Parcel parcel, String title) async {
     bool result = await Navigator.push(context, MaterialPageRoute(builder: (context) {
       return ParcelForm(title, parcel);
     }));

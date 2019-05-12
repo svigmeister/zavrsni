@@ -14,4 +14,8 @@ class Parcel {
   String get crop => _crop;
   double get income => _income;
   double get quantity => _quantity;
+
+  set crop(nCrop) {
+    this._crop = nCrop;
+  }
 }
