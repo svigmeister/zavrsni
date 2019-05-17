@@ -19,7 +19,7 @@ class ParcelListState extends State<ParcelList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Parcele'),
+        title: Text('Popis parcela'),
       ),
       // body: getParcelListView(),
       floatingActionButton: FloatingActionButton(

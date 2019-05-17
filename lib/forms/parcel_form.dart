@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../models/parcel.dart';
+import '../utils/database_helper.dart';
 
 // Create a Form Widget
 class ParcelForm extends StatefulWidget {
@@ -112,10 +113,10 @@ class ParcelFormState extends State<ParcelForm> {
                 // Validate will return true if the form is valid, or false if
                 // the form is invalid.
                 if (_parcelFormKey.currentState.validate()) {
-                  // If the form is valid, we want to show a Snackbar
+                  String dataString = _catchData(parcelNameController.text, m2Controller.text);
+                  _save();
                   moveToLastScreen();
-                  Scaffold.of(context)
-                      .showSnackBar(SnackBar(content: Text('Spremam...')));
+                  _showAlertDialog('Catched info:', dataString);
                 }
               },
               child: Text('Spremi'),
@@ -124,6 +125,25 @@ class ParcelFormState extends State<ParcelForm> {
         ],
       ),
     );
+  }
+
+  void _save() async {
+    debugPrint('Entered _save method');
+  }
+
+  String _catchData(String parcelName, String m2) {
+    String resultString = 'Ime parcele: ' + parcelName + ', Površina: ' + m2;
+    return resultString;
+  }
+
+  void _showAlertDialog(String title, String message) {
+    AlertDialog dialog = AlertDialog(
+      title: Text(title),
+      content: Text(message),
+    );
+    showDialog(
+        context: context,
+        builder: (_) => dialog);
   }
 
   void moveToLastScreen() {
