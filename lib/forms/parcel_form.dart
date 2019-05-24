@@ -100,8 +100,12 @@ class ParcelFormState extends State<ParcelForm> {
             controller: m2Controller,
             style: textStyle,
             validator: (value) {
+              RegExp numRegex = new RegExp(r'^[0-9]+(\.[0-9]+)?$');
               if (value.isEmpty) {
                 return 'Molim unesite površinu parcele';
+              }
+              if (!numRegex.hasMatch(value)) {
+                return 'Molim unesite valjani broj (za decimalni zapis koristite točku)';
               }
             },
           ),
@@ -113,8 +117,9 @@ class ParcelFormState extends State<ParcelForm> {
                 // Validate will return true if the form is valid, or false if
                 // the form is invalid.
                 if (_parcelFormKey.currentState.validate()) {
-                  String dataString = _catchData(parcelNameController.text, m2Controller.text);
-                  _save();
+                  String dataString = _catchData(parcelNameController.text,
+                      m2Controller.text, parcel.crop);
+                  _save(parcel);
                   moveToLastScreen();
                   _showAlertDialog('Catched info:', dataString);
                 }
@@ -127,12 +132,28 @@ class ParcelFormState extends State<ParcelForm> {
     );
   }
 
-  void _save() async {
+  void _save(Parcel parcelToSave) async {
     debugPrint('Entered _save method');
+    DatabaseHelper helper = DatabaseHelper.instance;
+    if (parcelToSave.income.isNaN || parcelToSave.income == null) {
+      parcelToSave.income = 0;
+    }
+    if (parcelToSave.currentQuantity.isNaN || parcelToSave.currentQuantity == null) {
+      parcelToSave.currentQuantity = 0;
+    }
+    if (parcelToSave.totalQuantity.isNaN || parcelToSave.totalQuantity == null) {
+      parcelToSave.totalQuantity = 0;
+    }
+
+    await helper.insertParcel(parcelToSave);
   }
 
-  String _catchData(String parcelName, String m2) {
-    String resultString = 'Ime parcele: ' + parcelName + ', Površina: ' + m2;
+  String _catchData(String parcelName, String m2, String crop) {
+    this.parcel.parcelName = parcelName;
+    this.parcel.m2 = double.parse(m2);
+    String resultString = 'Ime parcele: ' + this.parcel.parcelName +
+        ', Površina: ' + this.parcel.m2.toString() +
+        ', Usjev: ' + this.parcel.crop;
     return resultString;
   }
 

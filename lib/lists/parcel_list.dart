@@ -25,7 +25,7 @@ class ParcelListState extends State<ParcelList> {
       floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
           onPressed: () {
-            navigateToParcelForm(Parcel('Tikvice', 0, 'Mrkva'), 'Dodaj parcelu');
+            navigateToParcelForm(Parcel('Moja Parcela', 1, 'Mrkva'), 'Dodaj parcelu');
           }
           ),
     );
