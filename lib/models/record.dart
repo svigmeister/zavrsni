@@ -40,7 +40,7 @@ class Record {
     var map = Map<String, dynamic>();
 
     if (id != null) {
-      map['id'] = _id;
+      map['_id'] = _id;
     }
     map['parcelName'] = _parcelName;
     map['activityType'] = _activityType;
@@ -52,7 +52,7 @@ class Record {
   }
 
   Record.fromMap(Map<String, dynamic> map) {
-    this._id = map['id'];
+    this._id = map['_id'];
     this._parcelName = map['parcelName'];
     this._activityType = map['activityType'];
     this._date = map['date'];

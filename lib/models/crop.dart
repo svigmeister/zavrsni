@@ -18,7 +18,7 @@ class Crop {
     var map = Map<String, dynamic>();
 
     if (id != null) {
-      map['id'] = _id;
+      map['_id'] = _id;
     }
     map['cropName'] = _cropName;
 
@@ -26,7 +26,7 @@ class Crop {
   }
 
   Crop.fromMap(Map<String, dynamic> map) {
-    this._id = map['id'];
+    this._id = map['_id'];
     this._cropName = map['cropName'];
   }
 }

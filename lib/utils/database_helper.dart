@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
@@ -27,6 +28,7 @@ class DatabaseHelper {
 
   // open the database
   _initDatabase() async {
+    debugPrint('Entered _initDatabase [dbHelper]');
     // The path_provider plugin gets the right directory for Android or iOS.
     var databasesPath = await getDatabasesPath();
     String path = join(databasesPath, _databaseName);
@@ -38,6 +40,7 @@ class DatabaseHelper {
 
   // SQL string to create the database
   Future _onCreate(Database db, int version) async {
+    debugPrint('Entered _onCreate [dbHelper]');
     await db.execute('''
               CREATE TABLE $tableParcel (
                 $columnParcelId INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -53,21 +56,49 @@ class DatabaseHelper {
 
   // Database helper methods:
 
-  Future<int> insertParcel(Parcel parcel) async {
-    Database db = await database;
-    int id = await db.insert(tableParcel, parcel.toMap());
+  // Inserts a row in the database where each key in the Map is a column name
+  // and the value is the column value. The return value is the id of the
+  // inserted row.
+  Future<int> insertParcel(Map<String, dynamic> row) async {
+    debugPrint('Entered insertParcel [dbHelper]\nRow to enter: ' + row.toString());
+    Database db = await instance.database;
+    int id = await db.insert(tableParcel, row);
     return id;
   }
 
+  // All of the rows are returned as a list of maps, where each map is
+  // a key-value list of columns.
+  /*Future<List<Map<String, dynamic>>> queryAllParcels() async {
+    Database db = await instance.database;
+    return await db.query(tableParcel);
+  }*/
+
   Future<List<Parcel>> getAllParcels() async {
-    Database db = await database;
-    List<Map<String, dynamic>> mapList = await db.query('SELECT * FROM $tableParcel');
+    debugPrint('Entered getAllParcels [dbHelper]');
+    Database db = await instance.database;
+    List<Map<String, dynamic>> mapList = await db.query(tableParcel);
     int count = mapList.length;
     List<Parcel> parcelList = List<Parcel>(count);
     for (int i = 0; i < count; i++) {
       parcelList.add(Parcel.fromMap(mapList[i]));
     }
+    debugPrint('Parcel list: [dbHelper]\n' + parcelList.toString());
     return parcelList;
+  }
+
+  // We are assuming here that the id column in the map is set. The other
+  // column values will be used to update the row.
+  Future<int> updateParcel(Map<String, dynamic> row) async {
+    Database db = await instance.database;
+    int id = row[columnParcelId];
+    return await db.update(tableParcel, row, where: '$columnParcelId = ?', whereArgs: [id]);
+  }
+
+  // Deletes the row specified by the id. The number of affected rows is
+  // returned. This should be 1 as long as the row exists.
+  Future<int> deleteParcel(int id) async {
+    Database db = await instance.database;
+    return await db.delete(tableParcel, where: '$columnParcelId = ?', whereArgs: [id]);
   }
 
 // All repeated column names are commented, here only to see the whole table structure
@@ -88,12 +119,10 @@ class DatabaseHelper {
 
   final String tableCrop = 'crop';
   final String columnCropId = '_id';
-
 // final String columnCropName = 'cropName';
 
   final String tableActivity = 'activity';
   final String columnActivityId = '_id';
-
 // final String columnActivityType = 'ActivityType';
 // final String columnCropName = 'cropName';
   final String columnStartTime = 'startTime';
@@ -101,17 +130,14 @@ class DatabaseHelper {
 
   final String tableActivityType = 'activityType';
   final String columnActivityTypeId = '_id';
-
 // final String columnActivityType = 'activityType';
   final String columnRepetitive = 'repetitive';
 
   final String tableRecord = 'record';
   final String columnRecordId = '_id';
-
 // final String columnParcelName = 'parcelName';
 // final String columnActivityType = 'activityType';
   final String columnDate = 'date';
-
 // final String columnIncome = 'income';
   final String columnQuantity = 'quantity';
 }

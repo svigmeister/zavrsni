@@ -28,7 +28,7 @@ class Tool {
     var map = Map<String, dynamic>();
 
     if (id != null) {
-      map['id'] = _id;
+      map['_id'] = _id;
     }
     map['toolName'] = _toolName;
     map['cropName'] = _cropName;
@@ -38,7 +38,7 @@ class Tool {
   }
 
   Tool.fromMap(Map<String, dynamic> map) {
-    this._id = map['id'];
+    this._id = map['_id'];
     this._toolName = map['toolName'];
     this._cropName = map['cropName'];
     this._activityType = map['activityType'];

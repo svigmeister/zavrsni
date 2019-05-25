@@ -46,7 +46,7 @@ class ParcelFormState extends State<ParcelForm> {
               leading: IconButton(
                   icon: Icon(Icons.arrow_back),
                   onPressed: () {
-                    debugPrint('User clicked back in parcel form');
+                    debugPrint('User clicked back [parcel form]');
                     moveToLastScreen();
                   }),
             ),
@@ -67,7 +67,7 @@ class ParcelFormState extends State<ParcelForm> {
                         hint: Text('Odaberite usjev'),
                         onChanged: (valueSelectedByUser) {
                           setState(() {
-                            debugPrint('User selected $valueSelectedByUser');
+                            debugPrint('User selected $valueSelectedByUser [parcel_form]');
                             parcel.crop = valueSelectedByUser;
                           });
                         }),
@@ -113,15 +113,13 @@ class ParcelFormState extends State<ParcelForm> {
             padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: RaisedButton(
               onPressed: () {
-                debugPrint('User clicked button save in parcel form');
+                debugPrint('User clicked button save [parcel form]');
                 // Validate will return true if the form is valid, or false if
                 // the form is invalid.
                 if (_parcelFormKey.currentState.validate()) {
-                  String dataString = _catchData(parcelNameController.text,
-                      m2Controller.text, parcel.crop);
+                  _catchUserInput(parcelNameController.text, m2Controller.text);
                   _save(parcel);
                   moveToLastScreen();
-                  _showAlertDialog('Catched info:', dataString);
                 }
               },
               child: Text('Spremi'),
@@ -133,38 +131,44 @@ class ParcelFormState extends State<ParcelForm> {
   }
 
   void _save(Parcel parcelToSave) async {
-    debugPrint('Entered _save method');
-    DatabaseHelper helper = DatabaseHelper.instance;
-    if (parcelToSave.income.isNaN || parcelToSave.income == null) {
-      parcelToSave.income = 0;
+    debugPrint('Entered _save method [parcel_form]');
+    DatabaseHelper dbHelper = DatabaseHelper.instance;
+    // _showAlertDialog(context, 'Parcel info:', parcel.parcelName);
+    if (parcelToSave.income == null) {
+      parcelToSave.income = 0.0;
     }
-    if (parcelToSave.currentQuantity.isNaN || parcelToSave.currentQuantity == null) {
-      parcelToSave.currentQuantity = 0;
+    if (parcelToSave.currentQuantity == null) {
+      parcelToSave.currentQuantity = 0.0;
     }
-    if (parcelToSave.totalQuantity.isNaN || parcelToSave.totalQuantity == null) {
-      parcelToSave.totalQuantity = 0;
+    if (parcelToSave.totalQuantity == null) {
+      parcelToSave.totalQuantity = 0.0;
     }
 
-    await helper.insertParcel(parcelToSave);
+    debugPrint('parcelToSave: [parcel_form]' + parcelToSave.toString());
+    // await dbHelper.insertParcel(parcelToSave.toMap());
   }
 
-  String _catchData(String parcelName, String m2, String crop) {
-    this.parcel.parcelName = parcelName;
-    this.parcel.m2 = double.parse(m2);
-    String resultString = 'Ime parcele: ' + this.parcel.parcelName +
-        ', Površina: ' + this.parcel.m2.toString() +
-        ', Usjev: ' + this.parcel.crop;
-    return resultString;
+  void _catchUserInput(String parcelName, String m2) {
+    parcel.parcelName = parcelName;
+    parcel.m2 = double.parse(m2);
   }
 
-  void _showAlertDialog(String title, String message) {
-    AlertDialog dialog = AlertDialog(
-      title: Text(title),
-      content: Text(message),
+  Future<void> _showAlertDialog(BuildContext context, String title, String message) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Ok'),
+              onPressed: () {},
+            ),
+          ],
+        );
+      },
     );
-    showDialog(
-        context: context,
-        builder: (_) => dialog);
   }
 
   void moveToLastScreen() {

@@ -23,7 +23,7 @@ class ActivityType {
     var map = Map<String, dynamic>();
 
     if (id != null) {
-      map['id'] = _id;
+      map['_id'] = _id;
     }
     map['activityType'] = _activityType;
     map['repetitive'] = _repetitive;
@@ -32,7 +32,7 @@ class ActivityType {
   }
 
   ActivityType.fromMap(Map<String, dynamic> map) {
-    this._id = map['id'];
+    this._id = map['_id'];
     this._activityType = map['activityType'];
     this._repetitive = map['repetitive'];
   }

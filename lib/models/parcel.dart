@@ -45,7 +45,7 @@ class Parcel {
     var map = Map<String, dynamic>();
 
     if (id != null) {
-      map['id'] = _id;
+      map['_id'] = _id;
     }
     map['parcelName'] = _parcelName;
     map['m2'] = _m2;
@@ -58,12 +58,19 @@ class Parcel {
   }
 
   Parcel.fromMap(Map<String, dynamic> map) {
-    this._id = map['id'];
+    this._id = map['_id'];
     this._parcelName = map['parcelName'];
     this._m2 = map['m2'];
     this._crop = map['crop'];
     this._income = map['income'];
     this._totalQuantity = map['totalQuantity'];
     this._currentQuantity = map['currentQuantity'];
+  }
+
+  String toString() {
+    return '_Id parcele: ' + this.id.toString() + '\nIme parcele: ' + this.parcelName
+        + '\nPovršina: ' + this.m2.toString() + '\nUsjev: ' + this.crop
+        + '\nZarada: ' + this.income.toString() + '\nTotalna dobivena količina: '
+        + this.totalQuantity.toString() + '\nTreuntna količina: ' + this.currentQuantity.toString();
   }
 }
