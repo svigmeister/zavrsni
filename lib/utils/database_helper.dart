@@ -52,6 +52,18 @@ class DatabaseHelper {
                 $columnCurrentQuantity REAL
               )
               ''');
+
+    Map<String, dynamic> row = {
+      columnParcelId : 152,
+      columnParcelName : "TestName",
+      columnM2 : 2.2,
+      columnCrop : "Kuruza",
+      columnIncome : 150,
+      columnTotalQuantity : 50,
+      columnCurrentQuantity : 25
+    };
+    int id = await db.insert(tableParcel, row);
+    debugPrint('Test parcel insert returned id: $id [onCreate, dbHelper]');
   }
 
   // Database helper methods:
@@ -78,11 +90,13 @@ class DatabaseHelper {
     Database db = await instance.database;
     List<Map<String, dynamic>> mapList = await db.query(tableParcel);
     int count = mapList.length;
-    List<Parcel> parcelList = List<Parcel>(count);
+    debugPrint('Map list: [dbHelper]\n' + mapList.toString() + '\nCount: $count');
+    List<Parcel> parcelList = new List();
     for (int i = 0; i < count; i++) {
-      parcelList.add(Parcel.fromMap(mapList[i]));
+      Parcel tmp = Parcel.fromMap(mapList[i]);
+      parcelList.add(tmp);
     }
-    debugPrint('Parcel list: [dbHelper]\n' + parcelList.toString());
+    debugPrint('Return parcel list: [dbHelper]\n' + parcelList.toString());
     return parcelList;
   }
 

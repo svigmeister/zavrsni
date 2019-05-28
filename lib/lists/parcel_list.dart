@@ -41,10 +41,14 @@ class ParcelListState extends State<ParcelList> {
       future: dbHelper.getAllParcels(),
       builder: (BuildContext context, AsyncSnapshot<List<Parcel>> snapshot) {
         if (snapshot.hasData) {
+          debugPrint('snapshot.hasData = true [parcel_list]\nLista parcela: '
+          + snapshot.toString() + '\nsnapshot length: ' + snapshot.data.length.toString());
           return ListView.builder(
             itemCount: snapshot.data.length,
             itemBuilder: (BuildContext context, int index) {
+              debugPrint('treuntni index u item builderu: $index');
               Parcel par = snapshot.data[index];
+              debugPrint('Parcela u item builderu: [parcel_list]\n' + par.toString());
               return ListTile(
                 title: Text(par.parcelName),
                 leading: Text(par.id.toString()),

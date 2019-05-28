@@ -144,8 +144,9 @@ class ParcelFormState extends State<ParcelForm> {
       parcelToSave.totalQuantity = 0.0;
     }
 
-    debugPrint('parcelToSave: [parcel_form]' + parcelToSave.toString());
-    // await dbHelper.insertParcel(parcelToSave.toMap());
+    debugPrint('parcelToSave: [parcel_form]\n' + parcelToSave.toString());
+    int id = await dbHelper.insertParcel(parcelToSave.toMap());
+    debugPrint('Save returned id: $id [parcel_form]');
   }
 
   void _catchUserInput(String parcelName, String m2) {
