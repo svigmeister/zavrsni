@@ -3,7 +3,7 @@ class Record {
   int _id;
   String _parcelName;
   String _activityType;
-  DateTime _date;
+  String _date;
   double _income;
   double _quantity;
 
@@ -16,7 +16,7 @@ class Record {
   int get id => _id;
   String get parcelName => _parcelName;
   String get activityType => _activityType;
-  DateTime get date => _date;
+  String get date => _date;
   double get income => _income;
   double get quantity => _quantity;
 

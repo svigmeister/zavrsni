@@ -4,20 +4,22 @@ class Parcel {
   String _parcelName;
   double _m2;
   String _crop;
+  String _startTime;
   double _income;
   double _totalQuantity;
   double _currentQuantity;
 
-  Parcel(this._parcelName, this._m2, this._crop, [this._income,
+  Parcel(this._parcelName, this._m2, this._crop, this._startTime, [this._income,
     this._totalQuantity, this._currentQuantity]);
 
-  Parcel.withId(this._id, this._parcelName, this._m2, this._crop, [this._income,
-    this._totalQuantity, this._currentQuantity]);
+  Parcel.withId(this._id, this._parcelName, this._m2, this._crop, this._startTime,
+      [this._income, this._totalQuantity, this._currentQuantity]);
 
   int get id => _id;
   String get parcelName => _parcelName;
   double get m2 => _m2;
   String get crop => _crop;
+  String get startTime => _startTime;
   double get income => _income;
   double get totalQuantity => _totalQuantity;
   double get currentQuantity => _currentQuantity;
@@ -30,6 +32,9 @@ class Parcel {
   }
   set crop(nCrop) {
     this._crop = nCrop;
+  }
+  set startTime(nTime) {
+    this._startTime = (nTime);
   }
   set income(nIncome) {
     this._income = nIncome;
@@ -50,6 +55,7 @@ class Parcel {
     map['parcelName'] = _parcelName;
     map['m2'] = _m2;
     map['crop'] = _crop;
+    map['startTime'] = _startTime;
     map['income'] = _income;
     map['totalQuantity'] = _totalQuantity;
     map['currentQuantity'] = _currentQuantity;
@@ -62,6 +68,7 @@ class Parcel {
     this._parcelName = map['parcelName'];
     this._m2 = map['m2'];
     this._crop = map['crop'];
+    this._startTime = map['startTime'];
     this._income = map['income'];
     this._totalQuantity = map['totalQuantity'];
     this._currentQuantity = map['currentQuantity'];
@@ -70,7 +77,8 @@ class Parcel {
   String toString() {
     return '_Id parcele: ' + this.id.toString() + '\nIme parcele: ' + this.parcelName
         + '\nPovršina: ' + this.m2.toString() + '\nUsjev: ' + this.crop
-        + '\nZarada: ' + this.income.toString() + '\nTotalna dobivena količina: '
-        + this.totalQuantity.toString() + '\nTreuntna količina: ' + this.currentQuantity.toString();
+        + '\nPočetak rada: ' + this.startTime + '\nZarada: ' + this.income.toString()
+        + '\nTotalna dobivena količina: ' + this.totalQuantity.toString()
+        + '\nTreuntna količina: ' + this.currentQuantity.toString();
   }
 }

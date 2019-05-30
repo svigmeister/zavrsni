@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'dart:async';
 import 'package:sqflite/sqflite.dart';
 
 import '../models/parcel.dart';
-import '../forms/parcel_form.dart';
+import 'package:my_crop/screens/parcel_form.dart';
 import '../utils/database_helper.dart';
 
 // Create a List Widget
@@ -26,7 +27,10 @@ class ParcelListState extends State<ParcelList> {
       floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
           onPressed: () {
-            navigateToParcelForm(Parcel('Moja Parcela', 1, 'Mrkva'), 'Nova parcela');
+            DateTime now = DateTime.now();
+            String formattedDate = DateFormat('yyyy-MM-dd').format(now);
+            navigateToParcelForm(Parcel('Moja Parcela', 1, 'Mrkva', formattedDate),
+                'Nova parcela');
             setState(() {});
           }
           ),
@@ -50,7 +54,7 @@ class ParcelListState extends State<ParcelList> {
               Parcel par = snapshot.data[index];
               debugPrint('Parcela u item builderu: [parcel_list]\n' + par.toString());
               return ListTile(
-                title: Text(par.parcelName),
+                title: Text('${par.parcelName}, ${par.crop}, ${par.startTime}'),
                 leading: Text(par.id.toString()),
                 /*onTap: navigateToParcelForm(parcel, parcel.parcelName);
                          setState(() {});*/

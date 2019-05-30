@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../models/parcel.dart';
 import '../utils/database_helper.dart';
@@ -20,7 +21,7 @@ class ParcelForm extends StatefulWidget {
 class ParcelFormState extends State<ParcelForm> {
   // Create a global key that will uniquely identify the Form widget and allow
   // us to validate the form
-  //
+
   // Note: This is a GlobalKey<FormState>, not a GlobalKey<ParcelFormState>!
   final _parcelFormKey = GlobalKey<FormState>();
 
@@ -29,8 +30,23 @@ class ParcelFormState extends State<ParcelForm> {
   String appBarTitle;
   TextEditingController parcelNameController = TextEditingController();
   TextEditingController m2Controller = TextEditingController();
+  DateTime selectedDate = DateTime.now();
 
+  // State constructor
   ParcelFormState(this.parcel, this.appBarTitle);
+
+  // A method for date picker
+  Future<Null> _selectDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: DateTime.parse(parcel.startTime),
+        firstDate: DateTime(2010),
+        lastDate: DateTime(2060));
+    if (picked != null && picked != selectedDate)
+      setState(() {
+        selectedDate = picked;
+      });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +108,7 @@ class ParcelFormState extends State<ParcelForm> {
             style: textStyle,
             validator: (value) {
               if (value.isEmpty) {
-                return 'Molim unesite jedinstven naziv parcele';
+                return 'Unesite naziv parcele koji još ne koristite!';
               }
             },
           ),
@@ -102,12 +118,18 @@ class ParcelFormState extends State<ParcelForm> {
             validator: (value) {
               RegExp numRegex = new RegExp(r'^[0-9]+(\.[0-9]+)?$');
               if (value.isEmpty) {
-                return 'Molim unesite površinu parcele';
+                return 'Unesite površinu parcele!';
               }
               if (!numRegex.hasMatch(value)) {
-                return 'Molim unesite valjani broj (za decimalni zapis koristite točku)';
+                return 'Unesite brojčanu vrijednost (za decimalni zapis koristite točku)!';
               }
             },
+          ),
+          Text(DateFormat('yyyy-MM-dd').format(selectedDate)),
+          SizedBox(height: 20.0,),
+          RaisedButton(
+            onPressed: () => _selectDate(context),
+            child: Text('Odaberi datum'),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -117,7 +139,8 @@ class ParcelFormState extends State<ParcelForm> {
                 // Validate will return true if the form is valid, or false if
                 // the form is invalid.
                 if (_parcelFormKey.currentState.validate()) {
-                  _catchUserInput(parcelNameController.text, m2Controller.text);
+                  _catchUserInput(parcelNameController.text, m2Controller.text,
+                      selectedDate);
                   _save(parcel);
                   moveToLastScreen();
                 }
@@ -149,9 +172,10 @@ class ParcelFormState extends State<ParcelForm> {
     debugPrint('Save returned id: $id [parcel_form]');
   }
 
-  void _catchUserInput(String parcelName, String m2) {
+  void _catchUserInput(String parcelName, String m2, DateTime date) {
     parcel.parcelName = parcelName;
     parcel.m2 = double.parse(m2);
+    parcel.startTime = DateFormat('yyyy-MM-dd').format(date);
   }
 
   Future<void> _showAlertDialog(BuildContext context, String title, String message) {

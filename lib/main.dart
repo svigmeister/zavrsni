@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import './lists/parcel_list.dart';
+import 'package:my_crop/screens/parcel_list.dart';
 
 void main() => runApp(MyApp());
 
