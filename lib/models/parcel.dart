@@ -74,6 +74,7 @@ class Parcel {
     this._currentQuantity = map['currentQuantity'];
   }
 
+  @override
   String toString() {
     return '_Id parcele: ' + this.id.toString() + '\nIme parcele: ' + this.parcelName
         + '\nPovršina: ' + this.m2.toString() + '\nUsjev: ' + this.crop

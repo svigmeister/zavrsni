@@ -1,11 +1,12 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:intl/intl.dart';
 
 import '../models/parcel.dart';
+import '../models/crop.dart';
+import '../models/activity.dart';
+import '../models/tool.dart';
+import '../models/record.dart';
 
 
 class DatabaseHelper {
@@ -94,9 +95,15 @@ class DatabaseHelper {
                 $columnQuantity REAL
               )
               ''');
+
+    _initCrops();
+    // _initTools();
+    _initActivityTypes();
+    // _initActivities();
   }
 
   // Database helper methods:
+  // Parcels
 
   // Inserts a row in the database where each key in the Map is a column name
   // and the value is the column value. The return value is the id of the
@@ -108,13 +115,14 @@ class DatabaseHelper {
     return id;
   }
 
-  // Return all parcels of the user, immediate conversion from map to parcel
+  // Return all parcels of the user, immediate conversion from map to parcel objects
   Future<List<Parcel>> getAllParcels() async {
     debugPrint('Entered getAllParcels [dbHelper]');
     Database db = await instance.database;
     List<Map<String, dynamic>> mapList = await db.query(tableParcel);
     int count = mapList.length;
-    debugPrint('Map list: [dbHelper]\n' + mapList.toString() + '\nCount: $count');
+    debugPrint('Maps list: [dbHelper] [getAllParcels]\n' + mapList.toString()
+        + '\nCount: $count');
     List<Parcel> parcelList = new List();
     for (int i = 0; i < count; i++) {
       Parcel tmp = Parcel.fromMap(mapList[i]);
@@ -138,6 +146,147 @@ class DatabaseHelper {
     Database db = await instance.database;
     return await db.delete(tableParcel, where: '$columnParcelId = ?', whereArgs: [id]);
   }
+
+  // Crops
+
+  // Inserts a row in the database where each key in the Map is a column name
+  // and the value is the column value. The return value is the id of the
+  // inserted row.
+  Future<int> insertCrop(Map<String, dynamic> row) async {
+    debugPrint('Entered insertCrop [dbHelper]\nRow to enter: ' + row.toString());
+    Database db = await instance.database;
+    int id = await db.insert(tableCrop, row);
+    return id;
+  }
+
+  // Initial data for app, returns id of the last crop (number of crops added)
+  Future <int> _initCrops() async {
+    debugPrint('Entered _initCrops [dbHelper]');
+    int id;
+
+    Map<String, dynamic> row1 = {
+      columnCropName : 'Kukuruz'
+    };
+    id = await insertCrop(row1);
+    debugPrint('Inserted crop: $row1 with id: $id [_initCrops]');
+
+    Map<String, dynamic> row2 = {
+      columnCropName : 'Pšenica'
+    };
+    id = await insertCrop(row2);
+    debugPrint('Inserted crop: $row2 with id: $id [_initCrops]');
+
+    Map<String, dynamic> row3 = {
+      columnCropName : 'Rajčica'
+    };
+    id = await insertCrop(row3);
+    debugPrint('Inserted crop: $row3 with id: $id [_initCrops]');
+
+    Map<String, dynamic> row4 = {
+      columnCropName : 'Mrkva'
+    };
+    id = await insertCrop(row4);
+    debugPrint('Inserted crop: $row4 with id: $id [_initCrops]');
+
+    return id;
+  }
+
+  // Return all crops, immediate conversion from map to crop objects
+  Future<List<Crop>> getAllCrops() async {
+    debugPrint('Entered getAllCrops [dbHelper]');
+    Database db = await instance.database;
+    List<Map<String, dynamic>> mapList = await db.query(tableCrop);
+    int count = mapList.length;
+    debugPrint('Maps list: [dbHelper] [getAllCrops]\n' + mapList.toString()
+        + '\nCount: $count');
+    List<Crop> cropList = new List();
+    for (int i = 0; i < count; i++) {
+      Crop tmp = Crop.fromMap(mapList[i]);
+      cropList.add(tmp);
+    }
+    debugPrint('Return crop list: [dbHelper]\n' + cropList.toString());
+    return cropList;
+  }
+
+  // ActivityTypes
+
+  // Inserts a row in the database where each key in the Map is a column name
+  // and the value is the column value. The return value is the id of the
+  // inserted row.
+  Future<int> insertActivityType(Map<String, dynamic> row) async {
+    debugPrint('Entered insertActivityType [dbHelper]\nRow to enter: ' + row.toString());
+    Database db = await instance.database;
+    int id = await db.insert(tableActivityType, row);
+    return id;
+  }
+
+  // Initial data for app, returns id of the last activity type
+  Future <int> _initActivityTypes() async {
+    debugPrint('Entered _initActivityTypes [dbHelper]');
+    int id;
+
+    Map<String, dynamic> row1 = {
+      columnActivityType : 'Obrada tla'
+    };
+    id = await insertActivityType(row1);
+    debugPrint('Inserted activity type: $row1 with id: $id [_initActivityTypes]');
+
+    Map<String, dynamic> row2 = {
+      columnActivityType : 'Gnojenje'
+    };
+    id = await insertActivityType(row2);
+    debugPrint('Inserted activity type: $row2 with id: $id [_initActivityTypes]');
+
+    Map<String, dynamic> row3 = {
+      columnActivityType : 'Sjetva'
+    };
+    id = await insertActivityType(row3);
+    debugPrint('Inserted activity type: $row3 with id: $id [_initActivityTypes]');
+
+    Map<String, dynamic> row4 = {
+      columnActivityType : 'Sadnja'
+    };
+    id = await insertActivityType(row4);
+    debugPrint('Inserted activity type: $row4 with id: $id [_initActivityTypes]');
+
+    Map<String, dynamic> row5 = {
+      columnActivityType : 'Prihranjivanje'
+    };
+    id = await insertActivityType(row5);
+    debugPrint('Inserted activity type: $row5 with id: $id [_initActivityTypes]');
+
+    Map<String, dynamic> row6 = {
+      columnActivityType : 'Njega'
+    };
+    id = await insertActivityType(row6);
+    debugPrint('Inserted activity type: $row6 with id: $id [_initActivityTypes]');
+
+    Map<String, dynamic> row7 = {
+      columnActivityType : 'Berba'
+    };
+    id = await insertActivityType(row7);
+    debugPrint('Inserted activity type: $row7 with id: $id [_initActivityTypes]');
+
+    Map<String, dynamic> row8 = {
+      columnActivityType : 'Prodaja'
+    };
+    id = await insertActivityType(row8);
+    debugPrint('Inserted activity type: $row8 with id: $id [_initActivityTypes]');
+
+    return id;
+  }
+
+  // Activities
+  // insert, init, get(multiple)
+  // TODO
+
+  // Tools
+  // insert, init, get(multiple)
+  // TODO
+
+  // Records
+  // insert, update, delete, getAll
+  // TODO
 
 // All repeated column names are commented
   final String tableParcel = 'parcel';

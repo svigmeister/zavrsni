@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'dart:async';
-import 'package:sqflite/sqflite.dart';
 
 import '../models/parcel.dart';
-import 'package:my_crop/screens/parcel_form.dart';
+import '../screens/parcel_form.dart';
 import '../utils/database_helper.dart';
 
 // Create a List Widget
@@ -29,7 +27,7 @@ class ParcelListState extends State<ParcelList> {
           onPressed: () {
             DateTime now = DateTime.now();
             String formattedDate = DateFormat('yyyy-MM-dd').format(now);
-            navigateToParcelForm(Parcel('Moja Parcela', 1, 'Mrkva', formattedDate),
+            navigateToParcelForm(Parcel('', 0, 'Kukuruz', formattedDate),
                 'Nova parcela');
             setState(() {});
           }

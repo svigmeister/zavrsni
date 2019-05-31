@@ -25,7 +25,7 @@ class ParcelFormState extends State<ParcelForm> {
   // Note: This is a GlobalKey<FormState>, not a GlobalKey<ParcelFormState>!
   final _parcelFormKey = GlobalKey<FormState>();
 
-  static var _crops = ['Kuruza', 'Paradajz', 'Mrkva', 'Pšenica', 'Tikvice'];
+  static var _crops = ['Kukuruz', 'Mrkva', 'Pšenica', 'Rajčica'];
   Parcel parcel;
   String appBarTitle;
   TextEditingController parcelNameController = TextEditingController();
@@ -42,7 +42,7 @@ class ParcelFormState extends State<ParcelForm> {
         initialDate: DateTime.parse(parcel.startTime),
         firstDate: DateTime(2010),
         lastDate: DateTime(2060));
-    if (picked != null && picked != selectedDate)
+    if (picked != null)
       setState(() {
         selectedDate = picked;
       });
@@ -52,6 +52,9 @@ class ParcelFormState extends State<ParcelForm> {
   Widget build(BuildContext context) {
     // Build a Form widget using the _parcelFormKey we created above
     TextStyle textStyle = Theme.of(context).textTheme.title;
+    parcelNameController.text = parcel.parcelName;
+    m2Controller.text = parcel.m2.toString();
+
     return WillPopScope(
         onWillPop: () {
           moveToLastScreen();
@@ -67,7 +70,8 @@ class ParcelFormState extends State<ParcelForm> {
                   }),
             ),
             body: Padding(
-              padding: EdgeInsets.only(top: 15.0, left: 10.0, right: 10.0),
+              padding: EdgeInsets.only(
+                  top: 15.0, bottom: 15.0, left: 10.0, right: 10.0),
               child: Column(
                 children: <Widget>[
                   ListTile(
@@ -83,7 +87,8 @@ class ParcelFormState extends State<ParcelForm> {
                         hint: Text('Odaberite usjev'),
                         onChanged: (valueSelectedByUser) {
                           setState(() {
-                            debugPrint('User selected $valueSelectedByUser [parcel_form]');
+                            debugPrint(
+                                'User selected $valueSelectedByUser [parcel_form]');
                             parcel.crop = valueSelectedByUser;
                           });
                         }),
@@ -92,8 +97,7 @@ class ParcelFormState extends State<ParcelForm> {
                 ],
               ),
             )
-        )
-    );
+        ));
   }
 
   Widget parcelFormUI() {
@@ -103,30 +107,56 @@ class ParcelFormState extends State<ParcelForm> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          TextFormField(
-            controller: parcelNameController,
-            style: textStyle,
-            validator: (value) {
-              if (value.isEmpty) {
-                return 'Unesite naziv parcele koji još ne koristite!';
-              }
-            },
+          Padding(
+            padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
+            child: TextFormField(
+              controller: parcelNameController,
+              style: textStyle,
+              decoration: InputDecoration(
+                  labelText: 'Naziv',
+                  labelStyle: textStyle,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(4.5))
+              ),
+              onEditingComplete: () {
+                updateName();
+              },
+              validator: (value) {
+                if (value.isEmpty) {
+                  return 'Unesite naziv parcele koji još ne koristite!';
+                }
+              },
+            ),
           ),
-          TextFormField(
-            controller: m2Controller,
-            style: textStyle,
-            validator: (value) {
-              RegExp numRegex = new RegExp(r'^[0-9]+(\.[0-9]+)?$');
-              if (value.isEmpty) {
-                return 'Unesite površinu parcele!';
-              }
-              if (!numRegex.hasMatch(value)) {
-                return 'Unesite brojčanu vrijednost (za decimalni zapis koristite točku)!';
-              }
-            },
+          Padding(
+            padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
+            child: TextFormField(
+              controller: m2Controller,
+              style: textStyle,
+              decoration: InputDecoration(
+                  labelText: 'Površina',
+                  labelStyle: textStyle,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(4.5))
+              ),
+              onEditingComplete: () {
+                updateM2();
+              },
+              validator: (value) {
+                RegExp numRegex = new RegExp(r'^[0-9]+(\.[0-9]+)?$');
+                if (value.isEmpty) {
+                  return 'Unesite površinu parcele!';
+                }
+                if (!numRegex.hasMatch(value)) {
+                  return 'Unesite brojčanu vrijednost (za decimalni zapis koristite točku)!';
+                }
+              },
+            ),
           ),
           Text(DateFormat('yyyy-MM-dd').format(selectedDate)),
-          SizedBox(height: 20.0,),
+          SizedBox(
+            height: 20.0,
+          ),
           RaisedButton(
             onPressed: () => _selectDate(context),
             child: Text('Odaberi datum'),
@@ -151,6 +181,13 @@ class ParcelFormState extends State<ParcelForm> {
         ],
       ),
     );
+  }
+
+  void updateName() {
+    parcel.parcelName = parcelNameController.text;
+  }
+  void updateM2() {
+    parcel.m2 = double.parse(m2Controller.text);
   }
 
   void _save(Parcel parcelToSave) async {
@@ -178,7 +215,8 @@ class ParcelFormState extends State<ParcelForm> {
     parcel.startTime = DateFormat('yyyy-MM-dd').format(date);
   }
 
-  Future<void> _showAlertDialog(BuildContext context, String title, String message) {
+  Future<void> _showAlertDialog(
+      BuildContext context, String title, String message) {
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
