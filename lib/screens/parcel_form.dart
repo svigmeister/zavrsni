@@ -60,43 +60,47 @@ class ParcelFormState extends State<ParcelForm> {
           moveToLastScreen();
         },
         child: Scaffold(
-            appBar: AppBar(
-              title: Text(appBarTitle),
-              leading: IconButton(
-                  icon: Icon(Icons.arrow_back),
-                  onPressed: () {
-                    debugPrint('User clicked back [parcel form]');
-                    moveToLastScreen();
-                  }),
-            ),
-            body: Padding(
-              padding: EdgeInsets.only(
-                  top: 15.0, bottom: 15.0, left: 10.0, right: 10.0),
-              child: Column(
-                children: <Widget>[
-                  ListTile(
-                    title: DropdownButton(
-                        items: _crops.map((String dropDownStringItem) {
-                          return DropdownMenuItem<String>(
-                            value: dropDownStringItem,
-                            child: Text(dropDownStringItem),
-                          );
-                        }).toList(),
-                        style: textStyle,
-                        value: parcel.crop,
-                        hint: Text('Odaberite usjev'),
-                        onChanged: (valueSelectedByUser) {
-                          setState(() {
-                            debugPrint(
-                                'User selected $valueSelectedByUser [parcel_form]');
-                            parcel.crop = valueSelectedByUser;
-                          });
-                        }),
-                  ),
-                  parcelFormUI()
-                ],
+          appBar: AppBar(
+            title: Text(appBarTitle),
+            leading: IconButton(
+                icon: Icon(Icons.arrow_back),
+                onPressed: () {
+                  debugPrint('User clicked back [parcel form]');
+                  moveToLastScreen();
+                }),
+          ),
+          body: ListView(
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(
+                    top: 15.0, bottom: 15.0, left: 10.0, right: 10.0),
+                child: Column(
+                  children: <Widget>[
+                    ListTile(
+                      title: DropdownButton(
+                          items: _crops.map((String dropDownStringItem) {
+                            return DropdownMenuItem<String>(
+                              value: dropDownStringItem,
+                              child: Text(dropDownStringItem),
+                            );
+                          }).toList(),
+                          style: textStyle,
+                          value: parcel.crop,
+                          hint: Text('Odaberite usjev'),
+                          onChanged: (valueSelectedByUser) {
+                            setState(() {
+                              debugPrint(
+                                  'User selected $valueSelectedByUser [parcel_form]');
+                              parcel.crop = valueSelectedByUser;
+                            });
+                          }),
+                    ),
+                    parcelFormUI()
+                  ],
+                ),
               ),
-            )
+            ],
+          ),
         ));
   }
 
@@ -116,8 +120,7 @@ class ParcelFormState extends State<ParcelForm> {
                   labelText: 'Naziv',
                   labelStyle: textStyle,
                   border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(4.5))
-              ),
+                      borderRadius: BorderRadius.circular(4.5))),
               onEditingComplete: () {
                 updateName();
               },
@@ -137,8 +140,7 @@ class ParcelFormState extends State<ParcelForm> {
                   labelText: 'Površina',
                   labelStyle: textStyle,
                   border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(4.5))
-              ),
+                      borderRadius: BorderRadius.circular(4.5))),
               onEditingComplete: () {
                 updateM2();
               },
@@ -165,13 +167,13 @@ class ParcelFormState extends State<ParcelForm> {
             padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: RaisedButton(
               onPressed: () {
-                debugPrint('User clicked button save [parcel form]');
+                debugPrint('User clicked button spremi [parcel form]');
                 // Validate will return true if the form is valid, or false if
                 // the form is invalid.
                 if (_parcelFormKey.currentState.validate()) {
                   _catchUserInput(parcelNameController.text, m2Controller.text,
                       selectedDate);
-                  _save(parcel);
+                  _saveParcel(parcel);
                   moveToLastScreen();
                 }
               },
@@ -186,12 +188,13 @@ class ParcelFormState extends State<ParcelForm> {
   void updateName() {
     parcel.parcelName = parcelNameController.text;
   }
+
   void updateM2() {
     parcel.m2 = double.parse(m2Controller.text);
   }
 
-  void _save(Parcel parcelToSave) async {
-    debugPrint('Entered _save method [parcel_form]');
+  void _saveParcel(Parcel parcelToSave) async {
+    debugPrint('Entered _saveParcel method [parcel_form]');
     DatabaseHelper dbHelper = DatabaseHelper.instance;
     // _showAlertDialog(context, 'Parcel info:', parcel.parcelName);
     if (parcelToSave.income == null) {
@@ -206,7 +209,7 @@ class ParcelFormState extends State<ParcelForm> {
 
     debugPrint('parcelToSave: [parcel_form]\n' + parcelToSave.toString());
     int id = await dbHelper.insertParcel(parcelToSave.toMap());
-    debugPrint('Save returned id: $id [parcel_form]');
+    debugPrint('Delete returned id: $id [parcel_form]');
   }
 
   void _catchUserInput(String parcelName, String m2, DateTime date) {

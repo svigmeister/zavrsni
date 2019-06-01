@@ -78,7 +78,7 @@ class Parcel {
   String toString() {
     return '_Id parcele: ' + this.id.toString() + '\nIme parcele: ' + this.parcelName
         + '\nPovršina: ' + this.m2.toString() + '\nUsjev: ' + this.crop
-        + '\nPočetak rada: ' + this.startTime + '\nZarada: ' + this.income.toString()
+        + '\nPočetak radova: ' + this.startTime + '\nZarada: ' + this.income.toString()
         + '\nTotalna dobivena količina: ' + this.totalQuantity.toString()
         + '\nTreuntna količina: ' + this.currentQuantity.toString();
   }

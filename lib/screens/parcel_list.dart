@@ -3,11 +3,11 @@ import 'package:intl/intl.dart';
 
 import '../models/parcel.dart';
 import '../screens/parcel_form.dart';
+import '../screens/parcel_detail.dart';
 import '../utils/database_helper.dart';
 
 // Create a List Widget
 class ParcelList extends StatefulWidget {
-
   @override
   State<StatefulWidget> createState() {
     return ParcelListState();
@@ -27,11 +27,10 @@ class ParcelListState extends State<ParcelList> {
           onPressed: () {
             DateTime now = DateTime.now();
             String formattedDate = DateFormat('yyyy-MM-dd').format(now);
-            navigateToParcelForm(Parcel('', 0, 'Kukuruz', formattedDate),
-                'Nova parcela');
+            navigateToParcelForm(
+                Parcel('', 0, 'Kukuruz', formattedDate), 'Nova parcela');
             setState(() {});
-          }
-          ),
+          }),
     );
   }
 
@@ -43,22 +42,27 @@ class ParcelListState extends State<ParcelList> {
       future: dbHelper.getAllParcels(),
       builder: (BuildContext context, AsyncSnapshot<List<Parcel>> snapshot) {
         if (snapshot.hasData) {
-          debugPrint('snapshot.hasData = true [parcel_list]\nLista parcela: '
-          + snapshot.toString() + '\nsnapshot length: ' + snapshot.data.length.toString());
+          debugPrint('snapshot.hasData = true [parcel_list]\nLista parcela: ' +
+              snapshot.toString() +
+              '\nsnapshot length: ' +
+              snapshot.data.length.toString());
           return ListView.builder(
-            itemCount: snapshot.data.length,
-            itemBuilder: (BuildContext context, int index) {
-              debugPrint('treuntni index u item builderu: $index');
-              Parcel par = snapshot.data[index];
-              debugPrint('Parcela u item builderu: [parcel_list]\n' + par.toString());
-              return ListTile(
-                title: Text('${par.parcelName}, ${par.crop}, ${par.startTime}'),
-                leading: Text(par.id.toString()),
-                /*onTap: navigateToParcelForm(parcel, parcel.parcelName);
-                         setState(() {});*/
-              );
-            }
-          );
+              itemCount: snapshot.data.length,
+              itemBuilder: (BuildContext context, int index) {
+                debugPrint('treuntni index u item builderu: $index');
+                Parcel listedParcel = snapshot.data[index];
+                debugPrint('Parcela u item builderu: [parcel_list]\n' +
+                    listedParcel.toString());
+                return ListTile(
+                    title: Text(
+                        '${listedParcel.parcelName}, ${listedParcel.crop}, ${listedParcel.startTime}'),
+                    leading: Text(listedParcel.id.toString()),
+                    onTap: () {
+                      navigateToParcelDetail(
+                          listedParcel, listedParcel.parcelName);
+                      setState(() {});
+                    });
+              });
         } else {
           return Center(child: CircularProgressIndicator());
         }
@@ -67,12 +71,24 @@ class ParcelListState extends State<ParcelList> {
   }
 
   void navigateToParcelForm(Parcel parcel, String title) async {
-    bool result = await Navigator.push(context, MaterialPageRoute(builder: (context) {
+    bool result =
+        await Navigator.push(context, MaterialPageRoute(builder: (context) {
       return ParcelForm(title, parcel);
     }));
 
-    // if (result == true) {
-    //   updateListView();
-    // }
+    if (result == true) {
+      getParcelListView();
+    }
+  }
+
+  void navigateToParcelDetail(Parcel parcel, String title) async {
+    bool result =
+        await Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return ParcelDetail(title, parcel);
+    }));
+
+    if (result == true) {
+      getParcelListView();
+    }
   }
 }
