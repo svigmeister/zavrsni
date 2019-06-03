@@ -42,8 +42,8 @@ class RecordFormState extends State<RecordForm> {
     final DateTime picked = await showDatePicker(
         context: context,
         initialDate: DateTime.parse(record.date),
-        firstDate: DateTime(1, 2018),
-        lastDate: DateTime(9, 6, 2096));
+        firstDate: DateTime(2018),
+        lastDate: DateTime(2096));
     if (picked != null)
       setState(() {
         selectedDate = picked;

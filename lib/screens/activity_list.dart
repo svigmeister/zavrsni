@@ -10,22 +10,20 @@ import '../utils/database_helper.dart';
 
 // Create a List Widget
 class ActivityList extends StatefulWidget {
-  final String appBarTitle;
   final Parcel parcel;
 
-  ActivityList(this.appBarTitle, this.parcel);
+  ActivityList(this.parcel);
 
   @override
   State<StatefulWidget> createState() {
-    return ActivityListState(this.parcel, this.appBarTitle);
+    return ActivityListState(this.parcel);
   }
 }
 
 class ActivityListState extends State<ActivityList> {
   Parcel parcel;
-  String appBarTitle;
 
-  ActivityListState(this.parcel, this.appBarTitle);
+  ActivityListState(this.parcel);
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +33,7 @@ class ActivityListState extends State<ActivityList> {
         },
         child: Scaffold(
             appBar: AppBar(
-              title: Text('Popis zadataka za parcelu: $appBarTitle'),
+              title: Text('Popis zadataka za parcelu'),
               leading: IconButton(
                   icon: Icon(Icons.arrow_back),
                   onPressed: () {

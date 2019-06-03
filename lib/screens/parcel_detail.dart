@@ -84,7 +84,7 @@ class ParcelDetailState extends State<ParcelDetail> {
           child: RaisedButton(
               onPressed: () {
                 debugPrint('User clicked button obavljeno [parcel detail]');
-                navigateToRecordList(parcel, parcel.parcelName);
+                navigateToRecordList(parcel);
               },
               child: Text('Obavljeno')
           )
@@ -94,7 +94,7 @@ class ParcelDetailState extends State<ParcelDetail> {
           child: RaisedButton(
               onPressed: () {
                 debugPrint('User clicked button zadaci [parcel detail]');
-                navigateToActivityList(parcel, parcel.parcelName);
+                navigateToActivityList(parcel);
               },
               child: Text('Zadaci')
           )
@@ -168,15 +168,15 @@ class ParcelDetailState extends State<ParcelDetail> {
     }));
   }
 
-  void navigateToRecordList(Parcel parcel, String title) async {
+  void navigateToRecordList(Parcel parcel) async {
     await Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return RecordList(title, parcel);
+      return RecordList(parcel);
     }));
   }
 
-  void navigateToActivityList(Parcel parcel, String title) async {
+  void navigateToActivityList(Parcel parcel) async {
     await Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return ActivityList(title, parcel);
+      return ActivityList(parcel);
     }));
   }
 

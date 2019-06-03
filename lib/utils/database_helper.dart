@@ -76,6 +76,7 @@ class DatabaseHelper {
                 $columnCropName TEXT NOT NULL,
                 $columnStartDay INTEGER NOT NULL,
                 $columnRepeatTimes INTEGER NOT NULL,
+                $columnRepeatDays INTEGER NOT NULL,
                 $columnDescription TEXT NOT NULL
               )
               ''');
@@ -199,7 +200,7 @@ class DatabaseHelper {
       columnCropName : 'Kukuruz',
       columnActivityType : 'Obrada tla'
     };
-    id = await db.insert(tableActivityType, toolRow1);
+    id = await db.insert(tableTool, toolRow1);
     debugPrint('Inserted tool: $toolRow1 with id: $id [_initTools]');
   }
 

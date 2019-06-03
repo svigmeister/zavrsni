@@ -8,22 +8,20 @@ import '../utils/database_helper.dart';
 
 // Create a List Widget
 class RecordList extends StatefulWidget {
-  final String appBarTitle;
   final Parcel parcel;
 
-  RecordList(this.appBarTitle, this.parcel);
+  RecordList(this.parcel);
 
   @override
   State<StatefulWidget> createState() {
-    return RecordListState(this.parcel, this.appBarTitle);
+    return RecordListState(this.parcel);
   }
 }
 
 class RecordListState extends State<RecordList> {
   Parcel parcel;
-  String appBarTitle;
 
-  RecordListState(this.parcel, this.appBarTitle);
+  RecordListState(this.parcel);
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +31,7 @@ class RecordListState extends State<RecordList> {
         },
         child: Scaffold(
             appBar: AppBar(
-              title: Text('Popis obavljenih zadataka za parcelu: $appBarTitle'),
+              title: Text('Popis obavljenih zadataka'),
               leading: IconButton(
                   icon: Icon(Icons.arrow_back),
                   onPressed: () {
