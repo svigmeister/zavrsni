@@ -14,7 +14,7 @@ class DatabaseHelper {
   // This is the actual database filename that is saved in the docs directory.
   static final _databaseName = "MyCropDatabase.db";
   // Increment this version when you need to change the schema.
-  static final _databaseVersion = 2;
+  static final _databaseVersion = 3;
 
   // Make this a singleton class.
   DatabaseHelper._privateConstructor();
@@ -76,7 +76,7 @@ class DatabaseHelper {
                 $columnCropName TEXT NOT NULL,
                 $columnStartDay INTEGER NOT NULL,
                 $columnRepeatTimes INTEGER NOT NULL,
-                $columnTips TEXT NOT NULL
+                $columnDescription TEXT NOT NULL
               )
               ''');
     await db.execute('''
@@ -268,10 +268,59 @@ class DatabaseHelper {
   }
 
   // Activities
-  // TODO: insert, init, get(multiple)
+  // TODO: init
+
+  Future<int> insertActivity(Map<String, dynamic> row) async {
+    debugPrint('Entered insertActivity [dbHelper]\nRow to enter: ' + row.toString());
+    Database db = await instance.database;
+    int id = await db.insert(tableActivity, row);
+    return id;
+  }
+
+  Future<List<Activity>> getCropActivities(String crop) async {
+    debugPrint('Entered getCropActivities [dbHelper]');
+    Database db = await instance.database;
+    List<Map<String, dynamic>> mapList = await db.query(tableActivity, where: '$columnCropName = ?', whereArgs: [crop]);
+    int count = mapList.length;
+    debugPrint('Maps list: [dbHelper] [getCropActivities]\n' + mapList.toString()
+        + '\nCount: $count');
+    List<Activity> activityList = new List();
+    for (int i = 0; i < count; i++) {
+      Activity tmp = Activity.fromMap(mapList[i]);
+      activityList.add(tmp);
+    }
+    debugPrint('Return activity list: [dbHelper]\n' + activityList.toString());
+    return activityList;
+  }
 
   // Tools
-  // TODO: insert, init, get(multiple)
+  // TODO: init, get(multiple)
+
+  Future<int> insertTool(Map<String, dynamic> row) async {
+    debugPrint('Entered insertTool[dbHelper]\nRow to enter: ' + row.toString());
+    Database db = await instance.database;
+    int id = await db.insert(tableTool, row);
+    return id;
+  }
+
+  Future<List<Tool>> getActivityTools(Activity activity) async {
+    debugPrint('Entered getActivityTools [dbHelper]');
+    Database db = await instance.database;
+    String crop = activity.cropName;
+    String actType = activity.activityType;
+    String sql = 'SELECT * FROM $tableTool WHERE $columnCropName = ? AND $columnActivityType = ?';
+    List<Map<String, dynamic>> mapList = await db.rawQuery(sql, [crop, actType]);
+    int count = mapList.length;
+    debugPrint('Maps list: [dbHelper] [getActivityTools]\n' + mapList.toString()
+        + '\nCount: $count');
+    List<Tool> toolList = new List();
+    for (int i = 0; i < count; i++) {
+      Tool tmp = Tool.fromMap(mapList[i]);
+      toolList.add(tmp);
+    }
+    debugPrint('Return tool list: [dbHelper]\n' + toolList.toString());
+    return toolList;
+  }
 
   // Records
   // TODO: insert, update, delete, getAll
@@ -304,7 +353,7 @@ class DatabaseHelper {
   final String columnStartDay = 'startDay';
   final String columnRepeatTimes = 'repeatTimes';
   final String columnRepeatDays = 'repeatDays';
-  final String columnTips = 'tips';
+  final String columnDescription = 'description';
 
   final String tableActivityType = 'activityType';
   final String columnActivityTypeId = '_id';

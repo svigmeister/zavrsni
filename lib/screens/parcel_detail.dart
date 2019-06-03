@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 
 import '../models/parcel.dart';
 import '../screens/parcel_form.dart';
+import '../screens/activity_list.dart';
 import '../utils/database_helper.dart';
 
 // Create a Widget
@@ -28,7 +29,7 @@ class ParcelDetailState extends State<ParcelDetail> {
   @override
   Widget build(BuildContext context) {
     TextStyle textStyle = Theme.of(context).textTheme.title;
-    final List<Widget> gridList = <Widget> [
+    List<Widget> gridList = <Widget> [
       Padding(
           padding: EdgeInsets.all(4.0),
           child: Text('Usjev:')
@@ -91,6 +92,7 @@ class ParcelDetailState extends State<ParcelDetail> {
           child: RaisedButton(
               onPressed: () {
                 debugPrint('User clicked button zadaci [parcel detail]');
+                navigateToActivityList(parcel, parcel.parcelName);
               },
               child: Text('Zadaci')
           )
@@ -117,6 +119,7 @@ class ParcelDetailState extends State<ParcelDetail> {
           )
       )
     ];
+
     return WillPopScope(
         onWillPop: () {
           moveToLastScreen();
@@ -162,6 +165,14 @@ class ParcelDetailState extends State<ParcelDetail> {
       return ParcelForm(title, parcel);
     }));
   }
+
+  void navigateToActivityList(Parcel parcel, String title) async {
+    await Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return ActivityList(title, parcel);
+    }));
+  }
+
+  // TODO: navigateToRecords()
 
   void moveToLastScreen() {
     Navigator.pop(context, true);

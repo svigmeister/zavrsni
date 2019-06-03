@@ -1,1 +1,109 @@
-// TODO
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+import '../models/parcel.dart';
+import '../models/activity.dart';
+import '../models/record.dart';
+import '../screens/record_form.dart';
+import '../screens/activity_detail.dart';
+import '../utils/database_helper.dart';
+
+// Create a List Widget
+class ActivityList extends StatefulWidget {
+  final String appBarTitle;
+  final Parcel parcel;
+
+  ActivityList(this.appBarTitle, this.parcel);
+
+  @override
+  State<StatefulWidget> createState() {
+    return ActivityListState(this.parcel, this.appBarTitle);
+  }
+}
+
+class ActivityListState extends State<ActivityList> {
+  Parcel parcel;
+  String appBarTitle;
+
+  ActivityListState(this.parcel, this.appBarTitle);
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+        onWillPop: () {
+          moveToLastScreen();
+        },
+        child: Scaffold(
+            appBar: AppBar(
+              title: Text('Popis zadataka za parcelu: $appBarTitle'),
+              leading: IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: () {
+                    debugPrint('User clicked back [activity list]');
+                    moveToLastScreen();
+                  }),
+            ),
+            body: getActivityListView()
+        )
+    );
+  }
+
+  Widget getActivityListView() {
+    debugPrint('Entered getActivityListView [activity_list]');
+    TextStyle textStyle = Theme.of(context).textTheme.title;
+    DatabaseHelper dbHelper = DatabaseHelper.instance;
+    return FutureBuilder<List<Activity>>(
+      future: dbHelper.getCropActivities(parcel.crop),
+      builder: (BuildContext context, AsyncSnapshot<List<Activity>> snapshot) {
+        if (snapshot.hasData) {
+          return ListView.builder(
+              itemCount: snapshot.data.length,
+              itemBuilder: (BuildContext context, int index) {
+                Activity listedActivity = snapshot.data[index];
+                return ListTile(
+                    title: Text(listedActivity.activityType),
+                    onTap: () {
+                      navigateToActivityDetail(listedActivity, listedActivity.activityType);
+                      setState(() {});
+                    },
+                  trailing: IconButton(
+                      icon: Icon(Icons.check),
+                      onPressed: () {
+                        debugPrint('User clicked "check" on an activity [activity list]');
+                        navigateToRecordForm(parcel, listedActivity.activityType);
+                      }),
+                );
+              });
+        } else {
+          return Center(child: CircularProgressIndicator());
+        }
+      },
+    );
+  }
+
+  void navigateToRecordForm(Parcel parcel, String title) async {
+    bool result =
+    await Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return RecordForm(title, parcel);
+    }));
+
+    if (result == true) {
+      getActivityListView();
+    }
+  }
+
+  void navigateToActivityDetail(Activity activity, String title) async {
+    bool result =
+    await Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return ActivityDetail(title, activity);
+    }));
+
+    if (result == true) {
+      getActivityListView();
+    }
+  }
+
+  void moveToLastScreen() {
+    Navigator.pop(context, true);
+  }
+}
