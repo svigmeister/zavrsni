@@ -5,19 +5,21 @@ class Record {
   String _activityType;
   String _date;
   double _income;
+  double _expense;
   double _quantity;
 
-  Record(this._parcelName, this._activityType, this._date, this._income,
+  Record(this._parcelName, this._activityType, this._date, this._income, this._expense,
     this._quantity);
 
   Record.withId(this._id, this._parcelName, this._activityType, this._date,
-      this._income, this._quantity);
+      this._income, this._expense, this._quantity);
 
   int get id => _id;
   String get parcelName => _parcelName;
   String get activityType => _activityType;
   String get date => _date;
   double get income => _income;
+  double get expense => _expense;
   double get quantity => _quantity;
 
   set parcelName(nName) {
@@ -31,6 +33,9 @@ class Record {
   }
   set income(nIncome) {
     this._income = nIncome;
+  }
+  set expense(nExpense) {
+    this._expense = nExpense;
   }
   set quantity(nQuantity) {
     this._quantity = nQuantity;
@@ -46,6 +51,7 @@ class Record {
     map['activityType'] = _activityType;
     map['date'] = _date;
     map['income'] = _income;
+    map['expense'] = _expense;
     map['quantity'] = _quantity;
 
     return map;
@@ -57,6 +63,7 @@ class Record {
     this._activityType = map['activityType'];
     this._date = map['date'];
     this._income = map['income'];
+    this._expense = map['expense'];
     this._quantity = map['quantity'];
   }
 }

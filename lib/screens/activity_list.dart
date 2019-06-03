@@ -70,7 +70,11 @@ class ActivityListState extends State<ActivityList> {
                       icon: Icon(Icons.check),
                       onPressed: () {
                         debugPrint('User clicked "check" on an activity [activity list]');
-                        navigateToRecordForm(parcel, listedActivity.activityType);
+                        DateTime now = DateTime.now();
+                        String formattedDate = DateFormat('yyyy-MM-dd').format(now);
+                        navigateToRecordForm(
+                            Record(parcel.parcelName, listedActivity.activityType, formattedDate, 0, 0, 0),
+                            parcel, 'Novi zapis');
                       }),
                 );
               });
@@ -81,10 +85,10 @@ class ActivityListState extends State<ActivityList> {
     );
   }
 
-  void navigateToRecordForm(Parcel parcel, String title) async {
+  void navigateToRecordForm(Record record, Parcel parcel, String title) async {
     bool result =
     await Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return RecordForm(title, parcel);
+      return RecordForm(title, parcel, record);
     }));
 
     if (result == true) {

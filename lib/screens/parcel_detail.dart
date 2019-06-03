@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 
 import '../models/parcel.dart';
 import '../screens/parcel_form.dart';
+import '../screens/record_list.dart';
 import '../screens/activity_list.dart';
 import '../utils/database_helper.dart';
 
@@ -83,6 +84,7 @@ class ParcelDetailState extends State<ParcelDetail> {
           child: RaisedButton(
               onPressed: () {
                 debugPrint('User clicked button obavljeno [parcel detail]');
+                navigateToRecordList(parcel, parcel.parcelName);
               },
               child: Text('Obavljeno')
           )
@@ -166,13 +168,17 @@ class ParcelDetailState extends State<ParcelDetail> {
     }));
   }
 
+  void navigateToRecordList(Parcel parcel, String title) async {
+    await Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return RecordList(title, parcel);
+    }));
+  }
+
   void navigateToActivityList(Parcel parcel, String title) async {
     await Navigator.push(context, MaterialPageRoute(builder: (context) {
       return ActivityList(title, parcel);
     }));
   }
-
-  // TODO: navigateToRecords()
 
   void moveToLastScreen() {
     Navigator.pop(context, true);

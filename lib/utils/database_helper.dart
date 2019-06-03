@@ -14,7 +14,7 @@ class DatabaseHelper {
   // This is the actual database filename that is saved in the docs directory.
   static final _databaseName = "MyCropDatabase.db";
   // Increment this version when you need to change the schema.
-  static final _databaseVersion = 3;
+  static final _databaseVersion = 1;
 
   // Make this a singleton class.
   DatabaseHelper._privateConstructor();
@@ -92,11 +92,12 @@ class DatabaseHelper {
                 $columnActivityType TEXT NOT NULL,
                 $columnDate TEXT NOT NULL,
                 $columnIncome REAL,
+                $columnExpense REAL,
                 $columnQuantity REAL
               )
               ''');
 
-    // _initCrops();
+    // TODO: _initCrops();
     debugPrint('Starteded _initCrops [dbHelper]');
     int id;
 
@@ -124,9 +125,7 @@ class DatabaseHelper {
     id = await db.insert(tableCrop, cropRow4);
     debugPrint('Inserted crop: $cropRow4 with id: $id [_initCrops]');
 
-    // _initTools();
-
-    // _initActivityTypes();
+    // TODO: _initActivityTypes();
     debugPrint('Started _initActivityTypes [dbHelper]');
 
     Map<String, dynamic> actTypRow1 = {
@@ -177,8 +176,31 @@ class DatabaseHelper {
     id = await db.insert(tableActivityType, actTypRow8);
     debugPrint('Inserted activity type: $actTypRow8 with id: $id [_initActivityTypes]');
 
+    // TODO: complete init
     // _initActivities();
+    debugPrint('Started _initActivities [dbHelper]');
 
+    Map<String, dynamic> actRow1 = {
+      columnActivityType : 'Obrada tla',
+      columnCropName : 'Kukuruz',
+      columnStartDay : 0,
+      columnRepeatTimes : 1,
+      columnRepeatDays : 0,
+      columnDescription : 'Treba delat i to samo jako nema pauze dok nije gotovo'
+    };
+    id = await db.insert(tableActivity, actRow1);
+    debugPrint('Inserted activity: $actRow1 with id: $id [_initActivity]');
+
+    // TODO: complete init
+    // _initTools();
+
+    Map<String, dynamic> toolRow1 = {
+      columnToolName : 'Lopata',
+      columnCropName : 'Kukuruz',
+      columnActivityType : 'Obrada tla'
+    };
+    id = await db.insert(tableActivityType, toolRow1);
+    debugPrint('Inserted tool: $toolRow1 with id: $id [_initTools]');
   }
 
   // Database helper methods:
@@ -268,7 +290,6 @@ class DatabaseHelper {
   }
 
   // Activities
-  // TODO: init
 
   Future<int> insertActivity(Map<String, dynamic> row) async {
     debugPrint('Entered insertActivity [dbHelper]\nRow to enter: ' + row.toString());
@@ -294,7 +315,6 @@ class DatabaseHelper {
   }
 
   // Tools
-  // TODO: init, get(multiple)
 
   Future<int> insertTool(Map<String, dynamic> row) async {
     debugPrint('Entered insertTool[dbHelper]\nRow to enter: ' + row.toString());
@@ -323,7 +343,40 @@ class DatabaseHelper {
   }
 
   // Records
-  // TODO: insert, update, delete, getAll
+
+  Future<int> insertRecord(Map<String, dynamic> row) async {
+    debugPrint('Entered insertRecord[dbHelper]\nRow to enter: ' + row.toString());
+    Database db = await instance.database;
+    int id = await db.insert(tableRecord, row);
+    return id;
+  }
+
+  Future<int> updateRecord(Map<String, dynamic> row) async {
+    Database db = await instance.database;
+    int id = row[columnRecordId];
+    return await db.update(tableRecord, row, where: '$columnRecordId = ?', whereArgs: [id]);
+  }
+
+  Future<int> deleteRecord(int id) async {
+    Database db = await instance.database;
+    return await db.delete(tableRecord, where: '$columnRecordId = ?', whereArgs: [id]);
+  }
+
+  Future<List<Record>> getParcelRecords(String parcel) async {
+    debugPrint('Entered getParcelRecords [dbHelper]');
+    Database db = await instance.database;
+    List<Map<String, dynamic>> mapList = await db.query(tableRecord, where: '$columnParcelName = ?', whereArgs: [parcel]);
+    int count = mapList.length;
+    debugPrint('Maps list: [dbHelper] [getParcelRecords]\n' + mapList.toString()
+        + '\nCount: $count');
+    List<Record> recordList = new List();
+    for (int i = 0; i < count; i++) {
+      Record tmp = Record.fromMap(mapList[i]);
+      recordList.add(tmp);
+    }
+    debugPrint('Return record list: [dbHelper]\n' + recordList.toString());
+    return recordList;
+  }
 
 // All repeated column names are commented
   final String tableParcel = 'parcel';
@@ -365,5 +418,6 @@ class DatabaseHelper {
 // final String columnActivityType = 'activityType';
   final String columnDate = 'date';
 // final String columnIncome = 'income';
+  final String columnExpense = 'expense';
   final String columnQuantity = 'quantity';
 }
