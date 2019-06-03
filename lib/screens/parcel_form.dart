@@ -128,6 +128,9 @@ class ParcelFormState extends State<ParcelForm> {
                 if (value.isEmpty) {
                   return 'Unesite naziv parcele koji još ne koristite!';
                 }
+                if (value == 'Nova parcela') {
+                  return 'Naziv ne smije biti "Nova parcela"!';
+                }
               },
             ),
           ),
@@ -173,8 +176,13 @@ class ParcelFormState extends State<ParcelForm> {
                 if (_parcelFormKey.currentState.validate()) {
                   _catchUserInput(parcelNameController.text, m2Controller.text,
                       selectedDate);
-                  _saveParcel(parcel);
-                  moveToLastScreen();
+                  if (appBarTitle == 'Nova parcela') {
+                    _saveParcel(parcel);
+                    moveToLastScreen();
+                  } else {
+                    _updateParcel(parcel);
+                    moveToLastScreen();
+                  }
                 }
               },
               child: Text('Spremi'),
@@ -209,7 +217,18 @@ class ParcelFormState extends State<ParcelForm> {
 
     debugPrint('parcelToSave: [parcel_form]\n' + parcelToSave.toString());
     int id = await dbHelper.insertParcel(parcelToSave.toMap());
-    debugPrint('Delete returned id: $id [parcel_form]');
+    debugPrint('Save returned id: $id [parcel_form]');
+  }
+
+  void _updateParcel(Parcel parcelToUpdate) async {
+    debugPrint('Entered _updateParcel method [parcel_form]');
+    DatabaseHelper dbHelper = DatabaseHelper.instance;
+
+    // TODO: i sve recordse updateati
+
+    debugPrint('parcelToUpdate: [parcel_form]\n' + parcelToUpdate.toString());
+    int id = await dbHelper.updateParcel(parcelToUpdate.toMap());
+    debugPrint('Update returned id: $id [parcel_form]');
   }
 
   void _catchUserInput(String parcelName, String m2, DateTime date) {

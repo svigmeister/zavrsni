@@ -28,6 +28,95 @@ class ParcelDetailState extends State<ParcelDetail> {
   @override
   Widget build(BuildContext context) {
     TextStyle textStyle = Theme.of(context).textTheme.title;
+    final List<Widget> gridList = <Widget> [
+      Padding(
+          padding: EdgeInsets.all(4.0),
+          child: Text('Usjev:')
+      ),
+      Padding(
+          padding: EdgeInsets.all(4.0),
+          child: Text(parcel.crop)
+      ),
+      Padding(
+          padding: EdgeInsets.all(4.0),
+          child: Text('Površina:')
+      ),
+      Padding(
+          padding: EdgeInsets.all(4.0),
+          child: Text(parcel.m2.toString() + ' m^2')
+      ),
+      Padding(
+          padding: EdgeInsets.all(4.0),
+          child: Text('Početak radova:')
+      ),
+      Padding(
+          padding: EdgeInsets.all(4.0),
+          child: Text(parcel.startTime)
+      ),
+      Padding(
+          padding: EdgeInsets.all(4.0),
+          child: Text('Ukupna količina:')
+      ),
+      Padding(
+          padding: EdgeInsets.all(4.0),
+          child: Text(parcel.totalQuantity.toString() + ' kg')
+      ),
+      Padding(
+          padding: EdgeInsets.all(4.0),
+          child: Text('Trenutna količina:')
+      ),
+      Padding(
+          padding: EdgeInsets.all(4.0),
+          child: Text(parcel.currentQuantity.toString() + ' kg')
+      ),
+      Padding(
+          padding: EdgeInsets.all(4.0),
+          child: Text('Ukupna zarada:')
+      ),
+      Padding(
+          padding: EdgeInsets.all(4.0),
+          child: Text(parcel.income.toString() + ' HRK')
+      ),
+      Padding(
+          padding: EdgeInsets.all(4.0),
+          child: RaisedButton(
+              onPressed: () {
+                debugPrint('User clicked button obavljeno [parcel detail]');
+              },
+              child: Text('Obavljeno')
+          )
+      ),
+      Padding(
+          padding: EdgeInsets.all(4.0),
+          child: RaisedButton(
+              onPressed: () {
+                debugPrint('User clicked button zadaci [parcel detail]');
+              },
+              child: Text('Zadaci')
+          )
+      ),
+      Padding(
+        padding: EdgeInsets.all(4.0),
+        child: RaisedButton(
+            onPressed: () {
+              debugPrint('User clicked button uredi [parcel detail]');
+              navigateToParcelForm(parcel, parcel.parcelName);
+            },
+            child: Text('Uredi')
+        ),
+      ),
+      Padding(
+          padding: EdgeInsets.all(4.0),
+          child: RaisedButton(
+              onPressed: () {
+                debugPrint('User clicked button obriši [parcel detail]');
+                _deleteParcel(parcel);
+                moveToLastScreen();
+              },
+              child: Text('Obriši')
+          )
+      )
+    ];
     return WillPopScope(
         onWillPop: () {
           moveToLastScreen();
@@ -42,168 +131,17 @@ class ParcelDetailState extends State<ParcelDetail> {
                   moveToLastScreen();
                 }),
           ),
-          /*body: Padding(
-              padding: EdgeInsets.only(
-                  top: 15.0, bottom: 15.0, left: 10.0, right: 10.0),
-              child: Column(
-                children: <Widget>[
-                  Column(
-                    children: <Widget>[
-                      // First row
-                      Row(children: <Widget>[
-                        TextField(
-                          style: textStyle,
-                          decoration: InputDecoration(
-                              labelText: 'Usjev:',
-                              labelStyle: textStyle,
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(4.5))),
-                        ),
-                        TextField(
-                          style: textStyle,
-                          decoration: InputDecoration(
-                              labelText: parcel.crop,
-                              labelStyle: textStyle,
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(4.5))),
-                        )
-                      ]),
-                      // Second row
-                      Row(children: <Widget>[
-                        TextField(
-                          style: textStyle,
-                          decoration: InputDecoration(
-                              labelText: 'Površina:',
-                              labelStyle: textStyle,
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(4.5))),
-                        ),
-                        TextField(
-                          style: textStyle,
-                          decoration: InputDecoration(
-                              labelText: parcel.m2.toString(),
-                              labelStyle: textStyle,
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(4.5))),
-                        )
-                      ]),
-                      // Third row
-                      Row(children: <Widget>[
-                        TextField(
-                          style: textStyle,
-                          decoration: InputDecoration(
-                              labelText: 'Početak radova:',
-                              labelStyle: textStyle,
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(4.5))),
-                        ),
-                        TextField(
-                          style: textStyle,
-                          decoration: InputDecoration(
-                              labelText: parcel.startTime,
-                              labelStyle: textStyle,
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(4.5))),
-                        )
-                      ]),
-                      // Fourth row
-                      Row(children: <Widget>[
-                        TextField(
-                          style: textStyle,
-                          decoration: InputDecoration(
-                              labelText: 'Ukupna količina:',
-                              labelStyle: textStyle,
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(4.5))),
-                        ),
-                        TextField(
-                          style: textStyle,
-                          decoration: InputDecoration(
-                              labelText: parcel.totalQuantity.toString(),
-                              labelStyle: textStyle,
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(4.5))),
-                        )
-                      ]),
-                      // Fifth row
-                      Row(children: <Widget>[
-                        TextField(
-                          style: textStyle,
-                          decoration: InputDecoration(
-                              labelText: 'Trenutna količina:',
-                              labelStyle: textStyle,
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(4.5))),
-                        ),
-                        TextField(
-                          style: textStyle,
-                          decoration: InputDecoration(
-                              labelText: parcel.currentQuantity.toString(),
-                              labelStyle: textStyle,
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(4.5))),
-                        )
-                      ]),
-                      // Sixth row
-                      Row(children: <Widget>[
-                        TextField(
-                          style: textStyle,
-                          decoration: InputDecoration(
-                              labelText: 'Ukupna zarada:',
-                              labelStyle: textStyle,
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(4.5))),
-                        ),
-                        TextField(
-                          style: textStyle,
-                          decoration: InputDecoration(
-                              labelText: parcel.income.toString(),
-                              labelStyle: textStyle,
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(4.5))),
-                        )
-                      ]),
-                    ],
-                    // End of first (left) column
-                  ),
-                  Column(
-                    children: <Widget>[
-                      RaisedButton(
-                          onPressed: () {
-                            debugPrint('User clicked button obavljeno [parcel detail]');
-                          },
-                          child: Text('Obavljeno')
-                      ),
-                      RaisedButton(
-                          onPressed: () {
-                            debugPrint('User clicked button zadaci [parcel detail]');
-                          },
-                          child: Text('Zadaci')
-                      ),
-                      Row(
-                        children: <Widget>[
-                          RaisedButton(
-                              onPressed: () {
-                                debugPrint('User clicked button uredi [parcel detail]');
-                                navigateToParcelForm(parcel, parcel.parcelName);
-                              },
-                              child: Text('Uredi')
-                          ),
-                          RaisedButton(
-                              onPressed: () {
-                                debugPrint('User clicked button obriši [parcel detail]');
-                                _deleteParcel(parcel);
-                                moveToLastScreen();
-                              },
-                              child: Text('Obriši')
-                          ),
-                        ],
-                      )
-                    ],
-                  )
-                ],
-              )),
-          */
+          body: GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              childAspectRatio: MediaQuery.of(context).size.width /
+                  (MediaQuery.of(context).size.height / 8),
+            ),
+            itemCount: gridList.length,
+            itemBuilder: (context, index) {
+              return GridTile(child: gridList[index]);
+              },
+          )
         )
     );
   }

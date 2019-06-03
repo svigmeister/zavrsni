@@ -96,10 +96,89 @@ class DatabaseHelper {
               )
               ''');
 
-    _initCrops();
+    // _initCrops();
+    debugPrint('Starteded _initCrops [dbHelper]');
+    int id;
+
+    Map<String, dynamic> cropRow1 = {
+      columnCropName : 'Kukuruz'
+    };
+    id = await db.insert(tableCrop, cropRow1);
+    debugPrint('Inserted crop: $cropRow1 with id: $id [_initCrops]');
+
+    Map<String, dynamic> cropRow2 = {
+      columnCropName : 'Pšenica'
+    };
+    id = await db.insert(tableCrop, cropRow2);
+    debugPrint('Inserted crop: $cropRow2 with id: $id [_initCrops]');
+
+    Map<String, dynamic> cropRow3 = {
+      columnCropName : 'Rajčica'
+    };
+    id = await db.insert(tableCrop, cropRow3);
+    debugPrint('Inserted crop: $cropRow3 with id: $id [_initCrops]');
+
+    Map<String, dynamic> cropRow4 = {
+      columnCropName : 'Mrkva'
+    };
+    id = await db.insert(tableCrop, cropRow4);
+    debugPrint('Inserted crop: $cropRow4 with id: $id [_initCrops]');
+
     // _initTools();
-    _initActivityTypes();
+
+    // _initActivityTypes();
+    debugPrint('Started _initActivityTypes [dbHelper]');
+
+    Map<String, dynamic> actTypRow1 = {
+      columnActivityType : 'Obrada tla'
+    };
+    id = await db.insert(tableActivityType, actTypRow1);
+    debugPrint('Inserted activity type: $actTypRow1 with id: $id [_initActivityTypes]');
+
+    Map<String, dynamic> actTypRow2 = {
+      columnActivityType : 'Gnojenje'
+    };
+    id = await db.insert(tableActivityType, actTypRow2);
+    debugPrint('Inserted activity type: $actTypRow2 with id: $id [_initActivityTypes]');
+
+    Map<String, dynamic> actTypRow3 = {
+      columnActivityType : 'Sjetva'
+    };
+    id = await db.insert(tableActivityType, actTypRow3);
+    debugPrint('Inserted activity type: $actTypRow3 with id: $id [_initActivityTypes]');
+
+    Map<String, dynamic> actTypRow4 = {
+      columnActivityType : 'Sadnja'
+    };
+    id = await db.insert(tableActivityType, actTypRow4);
+    debugPrint('Inserted activity type: $actTypRow4 with id: $id [_initActivityTypes]');
+
+    Map<String, dynamic> actTypRow5 = {
+      columnActivityType : 'Prihranjivanje'
+    };
+    id = await db.insert(tableActivityType, actTypRow5);
+    debugPrint('Inserted activity type: $actTypRow5 with id: $id [_initActivityTypes]');
+
+    Map<String, dynamic> actTypRow6 = {
+      columnActivityType : 'Njega'
+    };
+    id = await db.insert(tableActivityType, actTypRow6);
+    debugPrint('Inserted activity type: $actTypRow6 with id: $id [_initActivityTypes]');
+
+    Map<String, dynamic> actTypRow7 = {
+      columnActivityType : 'Berba'
+    };
+    id = await db.insert(tableActivityType, actTypRow7);
+    debugPrint('Inserted activity type: $actTypRow7 with id: $id [_initActivityTypes]');
+
+    Map<String, dynamic> actTypRow8 = {
+      columnActivityType : 'Prodaja'
+    };
+    id = await db.insert(tableActivityType, actTypRow8);
+    debugPrint('Inserted activity type: $actTypRow8 with id: $id [_initActivityTypes]');
+
     // _initActivities();
+
   }
 
   // Database helper methods:
@@ -159,38 +238,6 @@ class DatabaseHelper {
     return id;
   }
 
-  // Initial data for app, returns id of the last crop (number of crops added)
-  Future <int> _initCrops() async {
-    debugPrint('Entered _initCrops [dbHelper]');
-    int id;
-
-    Map<String, dynamic> row1 = {
-      columnCropName : 'Kukuruz'
-    };
-    id = await insertCrop(row1);
-    debugPrint('Inserted crop: $row1 with id: $id [_initCrops]');
-
-    Map<String, dynamic> row2 = {
-      columnCropName : 'Pšenica'
-    };
-    id = await insertCrop(row2);
-    debugPrint('Inserted crop: $row2 with id: $id [_initCrops]');
-
-    Map<String, dynamic> row3 = {
-      columnCropName : 'Rajčica'
-    };
-    id = await insertCrop(row3);
-    debugPrint('Inserted crop: $row3 with id: $id [_initCrops]');
-
-    Map<String, dynamic> row4 = {
-      columnCropName : 'Mrkva'
-    };
-    id = await insertCrop(row4);
-    debugPrint('Inserted crop: $row4 with id: $id [_initCrops]');
-
-    return id;
-  }
-
   // Return all crops, immediate conversion from map to crop objects
   Future<List<Crop>> getAllCrops() async {
     debugPrint('Entered getAllCrops [dbHelper]');
@@ -220,73 +267,14 @@ class DatabaseHelper {
     return id;
   }
 
-  // Initial data for app, returns id of the last activity type
-  Future <int> _initActivityTypes() async {
-    debugPrint('Entered _initActivityTypes [dbHelper]');
-    int id;
-
-    Map<String, dynamic> row1 = {
-      columnActivityType : 'Obrada tla'
-    };
-    id = await insertActivityType(row1);
-    debugPrint('Inserted activity type: $row1 with id: $id [_initActivityTypes]');
-
-    Map<String, dynamic> row2 = {
-      columnActivityType : 'Gnojenje'
-    };
-    id = await insertActivityType(row2);
-    debugPrint('Inserted activity type: $row2 with id: $id [_initActivityTypes]');
-
-    Map<String, dynamic> row3 = {
-      columnActivityType : 'Sjetva'
-    };
-    id = await insertActivityType(row3);
-    debugPrint('Inserted activity type: $row3 with id: $id [_initActivityTypes]');
-
-    Map<String, dynamic> row4 = {
-      columnActivityType : 'Sadnja'
-    };
-    id = await insertActivityType(row4);
-    debugPrint('Inserted activity type: $row4 with id: $id [_initActivityTypes]');
-
-    Map<String, dynamic> row5 = {
-      columnActivityType : 'Prihranjivanje'
-    };
-    id = await insertActivityType(row5);
-    debugPrint('Inserted activity type: $row5 with id: $id [_initActivityTypes]');
-
-    Map<String, dynamic> row6 = {
-      columnActivityType : 'Njega'
-    };
-    id = await insertActivityType(row6);
-    debugPrint('Inserted activity type: $row6 with id: $id [_initActivityTypes]');
-
-    Map<String, dynamic> row7 = {
-      columnActivityType : 'Berba'
-    };
-    id = await insertActivityType(row7);
-    debugPrint('Inserted activity type: $row7 with id: $id [_initActivityTypes]');
-
-    Map<String, dynamic> row8 = {
-      columnActivityType : 'Prodaja'
-    };
-    id = await insertActivityType(row8);
-    debugPrint('Inserted activity type: $row8 with id: $id [_initActivityTypes]');
-
-    return id;
-  }
-
   // Activities
-  // insert, init, get(multiple)
-  // TODO
+  // TODO: insert, init, get(multiple)
 
   // Tools
-  // insert, init, get(multiple)
-  // TODO
+  // TODO: insert, init, get(multiple)
 
   // Records
-  // insert, update, delete, getAll
-  // TODO
+  // TODO: insert, update, delete, getAll
 
 // All repeated column names are commented
   final String tableParcel = 'parcel';
