@@ -29,6 +29,9 @@ class RecordFormState extends State<RecordForm> {
   Record record;
   Parcel parcel;
   String appBarTitle;
+  double oldExpense;
+  double oldIncome;
+  double oldQuantity;
   TextEditingController expenseController = TextEditingController();
   TextEditingController incomeController = TextEditingController();
   TextEditingController quantityController = TextEditingController();
@@ -113,6 +116,9 @@ class RecordFormState extends State<RecordForm> {
                 if (!numRegex.hasMatch(value)) {
                   return 'Unesite brojčanu vrijednost (za decimalni zapis koristite točku)!';
                 }
+                if (double.parse(value) < 0) {
+                  return 'Unesite pozitivan iznos!';
+                }
               },
             ),
           ),
@@ -136,6 +142,9 @@ class RecordFormState extends State<RecordForm> {
                 }
                 if (!numRegex.hasMatch(value)) {
                   return 'Unesite brojčanu vrijednost (za decimalni zapis koristite točku)!';
+                }
+                if (double.parse(value) < 0) {
+                  return 'Unesite pozitivan iznos!';
                 }
               },
             ),
@@ -161,10 +170,13 @@ class RecordFormState extends State<RecordForm> {
                 if (!numRegex.hasMatch(value)) {
                   return 'Unesite brojčanu vrijednost (za decimalni zapis koristite točku)!';
                 }
+                if (double.parse(value) < 0) {
+                  return 'Unesite pozitivan iznos!';
+                }
               },
             ),
           ),
-          Text(DateFormat('yyyy-MM-dd').format(selectedDate)),
+          Text(DateFormat('dd-MM-yyyy').format(selectedDate)),
           SizedBox(
             height: 20.0,
           ),
@@ -183,15 +195,15 @@ class RecordFormState extends State<RecordForm> {
                   _catchUserInput(expenseController.text, incomeController.text,
                       quantityController.text, selectedDate);
                   if (appBarTitle == 'Novi zapis') {
-                    _saveRecord(record);
+                    _saveRecord(record, parcel);
                     moveToLastScreen();
                   } else {
-                    _updateRecord(record);
+                    _updateRecord(record, parcel);
                     moveToLastScreen();
                   }
                 }
               },
-              child: Text('Spremi'),
+              child: Text('Spremi zapis'),
             ),
           ),
         ],
@@ -199,39 +211,56 @@ class RecordFormState extends State<RecordForm> {
     );
   }
 
-  void _saveRecord(Record recordToSave) async {
+  void _saveRecord(Record recordToSave, Parcel recordsParcel) async {
     debugPrint('Entered _saveRecord method [record_form]');
     DatabaseHelper dbHelper = DatabaseHelper.instance;
 
     debugPrint('recordToSave: [record_form]\n' + recordToSave.toString());
     int id = await dbHelper.insertRecord(recordToSave.toMap());
     debugPrint('Save returned id: $id [record_form]');
+
+    debugPrint('Parcel to be updated: [record form]\n' + recordsParcel.toString());
+    int id2 = await dbHelper.refreshParcelInfo(recordsParcel);
+    debugPrint('Refresh returned id: $id2 [record_form]');
   }
 
-  void _updateRecord(Record recordToUpdate) async {
+  void _updateRecord(Record recordToUpdate, Parcel recordsParcel) async {
     debugPrint('Entered _updateRecord method [record_form]');
     DatabaseHelper dbHelper = DatabaseHelper.instance;
 
     debugPrint('recordToUpdate: [record_form]\n' + recordToUpdate.toString());
     int id = await dbHelper.updateRecord(recordToUpdate.toMap());
     debugPrint('Update returned id: $id [record_form]');
+
+    // If the record is updated, we need to delete old and insert new data
+    debugPrint('Parcel to be updated: [record form]\n' + recordsParcel.toString());
+    int id2 = await dbHelper.refreshParcelInfo(recordsParcel);
+    debugPrint('Refresh returned id: $id2 [record_detail]');
   }
 
   void updateExpense() {
+    oldExpense = record.expense;
     record.expense = double.parse(expenseController.text);
   }
 
   void updateIncome() {
+    oldIncome = record.income;
     record.income = double.parse(incomeController.text);
   }
 
   void updateQuantity() {
+    oldQuantity = record.quantity;
     record.quantity = double.parse(quantityController.text);
   }
 
   void _catchUserInput(String expense, String income, String qty, DateTime date) {
     record.expense = double.parse(expense);
     record.income = double.parse(income);
+    if (this.record.activityType == 'Prodaja') {
+      double negativeQty = double.parse(qty);
+      negativeQty -= (2 * negativeQty);
+      record.quantity = negativeQty;
+    }
     record.quantity = double.parse(qty);
     record.date = DateFormat('yyyy-MM-dd').format(date);
   }

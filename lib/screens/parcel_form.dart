@@ -28,6 +28,8 @@ class ParcelFormState extends State<ParcelForm> {
   static var _crops = ['Kukuruz', 'Mrkva', 'Pšenica', 'Rajčica'];
   Parcel parcel;
   String appBarTitle;
+  bool nameChanged = false;
+  String oldName;
   TextEditingController parcelNameController = TextEditingController();
   TextEditingController m2Controller = TextEditingController();
   DateTime selectedDate = DateTime.now();
@@ -158,7 +160,7 @@ class ParcelFormState extends State<ParcelForm> {
               },
             ),
           ),
-          Text(DateFormat('yyyy-MM-dd').format(selectedDate)),
+          Text(DateFormat('dd-MM-yyyy').format(selectedDate)),
           SizedBox(
             height: 20.0,
           ),
@@ -185,7 +187,7 @@ class ParcelFormState extends State<ParcelForm> {
                   }
                 }
               },
-              child: Text('Spremi'),
+              child: Text('Spremi parcelu'),
             ),
           ),
         ],
@@ -194,7 +196,11 @@ class ParcelFormState extends State<ParcelForm> {
   }
 
   void updateName() {
-    parcel.parcelName = parcelNameController.text;
+    if(parcel.parcelName != parcelNameController.text) {
+      oldName = parcel.parcelName;
+      parcel.parcelName = parcelNameController.text;
+      nameChanged = true;
+    }
   }
 
   void updateM2() {
@@ -224,11 +230,15 @@ class ParcelFormState extends State<ParcelForm> {
     debugPrint('Entered _updateParcel method [parcel_form]');
     DatabaseHelper dbHelper = DatabaseHelper.instance;
 
-    // TODO: i sve recordse updateati
-
     debugPrint('parcelToUpdate: [parcel_form]\n' + parcelToUpdate.toString());
     int id = await dbHelper.updateParcel(parcelToUpdate.toMap());
     debugPrint('Update returned id: $id [parcel_form]');
+
+    // If we changed the name of the parcel, we need to update records
+    if (nameChanged) {
+      int id2 = await dbHelper.updateRecordsOnParcelUpdate(oldName, parcelToUpdate.parcelName);
+      debugPrint('Update records returned id: $id2 [parcel_form]');
+    }
   }
 
   void _catchUserInput(String parcelName, String m2, DateTime date) {

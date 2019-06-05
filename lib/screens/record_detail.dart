@@ -60,7 +60,7 @@ class RecordDetailState extends State<RecordDetail> {
       ),
       Padding(
           padding: EdgeInsets.all(4.0),
-          child: Text(record.date)
+          child: Text(DateFormat('dd-MM-yyyy').format(DateTime.parse(record.date)))
       ),
       Padding(
           padding: EdgeInsets.all(4.0),
@@ -94,7 +94,7 @@ class RecordDetailState extends State<RecordDetail> {
               navigateToRecordForm(record, parcel,
                   '${parcel.parcelName} : ${record.activityType}');
             },
-            child: Text('Uredi')
+            child: Text('Uredi zapis')
         ),
       ),
       Padding(
@@ -102,10 +102,10 @@ class RecordDetailState extends State<RecordDetail> {
           child: RaisedButton(
               onPressed: () {
                 debugPrint('User clicked button obriši [record detail]');
-                _deleteRecord(record);
+                _deleteRecord(record, parcel);
                 moveToLastScreen();
               },
-              child: Text('Obriši')
+              child: Text('Obriši zapis')
           )
       )
     ];
@@ -139,13 +139,17 @@ class RecordDetailState extends State<RecordDetail> {
     );
   }
 
-  void _deleteRecord(Record recordToDelete) async {
+  void _deleteRecord(Record recordToDelete, Parcel parcel) async {
     debugPrint('Entered _deleteRecord method [record_detail]');
     DatabaseHelper dbHelper = DatabaseHelper.instance;
 
     debugPrint('recordToDelete: [record_detail]\n' + recordToDelete.toString());
     int i = await dbHelper.deleteRecord(recordToDelete.id);
     debugPrint('Delete returned: $i [record_detail]');
+
+    debugPrint('Parcel to be updated: [record detail]\n' + recordToDelete.toString());
+    int id2 = await dbHelper.refreshParcelInfo(parcel);
+    debugPrint('Refresh returned id: $id2 [record_detail]');
   }
 
   void navigateToRecordForm(Record record, Parcel parcel, String title) async {

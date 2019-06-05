@@ -249,6 +249,36 @@ class DatabaseHelper {
     return await db.delete(tableParcel, where: '$columnParcelId = ?', whereArgs: [id]);
   }
 
+  // After inserting new or updating old finished activities, we also need to
+  // update the parcel info
+  Future<int> refreshParcelInfo(Parcel parcel) async {
+    Database db = await instance.database;
+    debugPrint('Entered RefreshParcelInfo [dbHelper]');
+
+    /*String sql = 'SELECT * FROM $tableParcel WHERE $columnParcelName = ?';
+    List<Map<String, dynamic>> parcelMapList = await db.rawQuery(sql, [parcelName]);
+    Parcel parcel = Parcel.fromMap(parcelMapList[0]);*/
+
+    parcel.income = 0;
+    parcel.currentQuantity = 0;
+    parcel.totalQuantity = 0;
+
+    List<Map<String, dynamic>> recordsList = await db.query(tableRecord, where: '$columnParcelName = ?', whereArgs: [parcel.parcelName]);
+    int count = recordsList.length;
+    for (int i = 0; i < count; i++) {
+      Record tmp = Record.fromMap(recordsList[i]);
+      parcel.income += (tmp.income - tmp.expense);
+      parcel.currentQuantity += tmp.quantity;
+      if (tmp.quantity > 0) {
+        parcel.totalQuantity += tmp.quantity;
+      }
+    }
+
+    int id = parcel.id;
+    Map<String, dynamic> parcelToRefresh = parcel.toMap();
+    return await db.update(tableParcel, parcelToRefresh, where: '$columnParcelId = ?', whereArgs: [id]);
+  }
+
   // Crops
 
   // Inserts a row in the database where each key in the Map is a column name
@@ -363,6 +393,13 @@ class DatabaseHelper {
     return await db.delete(tableRecord, where: '$columnRecordId = ?', whereArgs: [id]);
   }
 
+  Future<int> deleteAllRecords(String parcelName) async {
+    debugPrint('Entered deleteAllRecords [dbHelper]');
+    Database db = await instance.database;
+    String sql = 'DELETE FROM $tableRecord WHERE $columnParcelName = ?';
+    return await db.rawDelete(sql, [parcelName]);
+  }
+
   Future<List<Record>> getParcelRecords(String parcel) async {
     debugPrint('Entered getParcelRecords [dbHelper]');
     Database db = await instance.database;
@@ -377,6 +414,24 @@ class DatabaseHelper {
     }
     debugPrint('Return record list: [dbHelper]\n' + recordList.toString());
     return recordList;
+  }
+
+  // When we update parcel and change it's name, we need to change the name in
+  // every record of edited parcel
+  Future<int> updateRecordsOnParcelUpdate(String oldName, String newName) async {
+    debugPrint('Entered updateRecordsOnParcelUpdate [dbHelper]');
+    Database db = await instance.database;
+    List<Map<String, dynamic>> mapList = await db.query(tableRecord, where: '$columnParcelName = ?', whereArgs: [oldName]);
+    int count = mapList.length;
+    int result = 0;
+    for (int i = 0; i < count; i++) {
+      Record tmpRecord = Record.fromMap(mapList[i]);
+      tmpRecord.parcelName = newName;
+      int id = tmpRecord.id;
+      Map<String, dynamic> tmpMap = tmpRecord.toMap();
+      result += await db.update(tableRecord, tmpMap, where: '$columnRecordId = ?', whereArgs: [id]);
+    }
+    return result;
   }
 
 // All repeated column names are commented

@@ -53,7 +53,7 @@ class ParcelDetailState extends State<ParcelDetail> {
       ),
       Padding(
           padding: EdgeInsets.all(4.0),
-          child: Text(parcel.startTime)
+          child: Text(DateFormat('dd-MM-yyyy').format(DateTime.parse(parcel.startTime)))
       ),
       Padding(
           padding: EdgeInsets.all(4.0),
@@ -106,7 +106,7 @@ class ParcelDetailState extends State<ParcelDetail> {
               debugPrint('User clicked button uredi [parcel detail]');
               navigateToParcelForm(parcel, parcel.parcelName);
             },
-            child: Text('Uredi')
+            child: Text('Uredi parcelu')
         ),
       ),
       Padding(
@@ -117,7 +117,17 @@ class ParcelDetailState extends State<ParcelDetail> {
                 _deleteParcel(parcel);
                 moveToLastScreen();
               },
-              child: Text('Obriši')
+              child: Text('Obriši parcelu')
+          )
+      ),
+      Padding(
+          padding: EdgeInsets.all(4.0),
+          child: RaisedButton(
+              onPressed: () {
+                debugPrint('User clicked button obriši zapise [parcel detail]');
+                _deleteParcelRecords(parcel);
+              },
+              child: Text('Obriši zapise')
           )
       )
     ];
@@ -155,11 +165,20 @@ class ParcelDetailState extends State<ParcelDetail> {
     debugPrint('Entered _deleteParcel method [parcel_detail]');
     DatabaseHelper dbHelper = DatabaseHelper.instance;
 
-    // TODO: i sve recordse obrisati
+    int nbr = await dbHelper.deleteAllRecords(parcelToDelete.parcelName);
+    debugPrint('Delete records returned: $nbr [parcel_detail]');
 
     debugPrint('parcelToDelete: [parcel_detail]\n' + parcelToDelete.toString());
     int i = await dbHelper.deleteParcel(parcelToDelete.id);
     debugPrint('Delete returned: $i [parcel_detail]');
+  }
+
+  void _deleteParcelRecords(Parcel parcel) async {
+    debugPrint('Entered _deleteParcelRecords method [parcel_detail]');
+    DatabaseHelper dbHelper = DatabaseHelper.instance;
+
+    int nbr = await dbHelper.deleteAllRecords(parcel.parcelName);
+    debugPrint('Delete records returned: $nbr [parcel_detail]');
   }
 
   void navigateToParcelForm(Parcel parcel, String title) async {
