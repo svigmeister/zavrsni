@@ -48,7 +48,6 @@ class ActivityListState extends State<ActivityList> {
 
   Widget getActivityListView() {
     debugPrint('Entered getActivityListView [activity_list]');
-    TextStyle textStyle = Theme.of(context).textTheme.title;
     DatabaseHelper dbHelper = DatabaseHelper.instance;
     return FutureBuilder<List<Activity>>(
       future: dbHelper.getCropActivities(parcel.crop),
@@ -58,6 +57,7 @@ class ActivityListState extends State<ActivityList> {
               itemCount: snapshot.data.length,
               itemBuilder: (BuildContext context, int index) {
                 Activity listedActivity = snapshot.data[index];
+                // TODO: ne prikaži koje ne treba
                 return ListTile(
                     title: Text(listedActivity.activityType),
                     onTap: () {
@@ -95,9 +95,11 @@ class ActivityListState extends State<ActivityList> {
   }
 
   void navigateToActivityDetail(Activity activity, String title) async {
+    DatabaseHelper dbHelper = DatabaseHelper.instance;
+    List<Record> parcelRecords = await dbHelper.getParcelRecords(parcel.parcelName);
     bool result =
     await Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return ActivityDetail(title, activity);
+      return ActivityDetail(title, activity, parcel, parcelRecords);
     }));
 
     if (result == true) {

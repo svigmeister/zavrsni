@@ -6,13 +6,14 @@ class Activity {
   int _startDay;
   int _repeatTimes;
   int _repeatDays;
+  double _expenseByM2;
   String _description;
 
   Activity(this._activityType, this._cropName, this._startDay, this._repeatTimes,
-      this._repeatDays, this._description);
+      this._repeatDays, this._expenseByM2, this._description);
 
   Activity.withId(this._id, this._activityType, this._cropName, this._startDay,
-      this._repeatTimes, this._repeatDays, this._description);
+      this._repeatTimes, this._repeatDays, this._expenseByM2, this._description);
 
   int get id => _id;
   String get activityType => _activityType;
@@ -20,6 +21,7 @@ class Activity {
   int get startDay => _startDay;
   int get repeatTimes => _repeatTimes;
   int get repeatDays => _repeatDays;
+  double get expenseByM2 => _expenseByM2;
   String get description => _description;
 
   set activityType(nType) {
@@ -37,6 +39,9 @@ class Activity {
   set repeatDays(nDays) {
     this._repeatDays = nDays;
   }
+  set expenseByM2(nExpense){
+    this._expenseByM2 = nExpense;
+  }
   set description(nDesc) {
     this._description = nDesc;
   }
@@ -52,6 +57,7 @@ class Activity {
     map['startDay'] = _startDay;
     map['repeatTimes'] = _repeatTimes;
     map['repeatDays'] = _repeatDays;
+    map['expenseByM2'] = _expenseByM2;
     map['description'] = _description;
 
     return map;
@@ -64,6 +70,7 @@ class Activity {
     this._startDay = map['startDay'];
     this._repeatTimes = map['repeatTimes'];
     this._repeatDays = map['repeatDays'];
+    this._expenseByM2 = map['expenseByM2'];
     this._description = map['description'];
   }
 }

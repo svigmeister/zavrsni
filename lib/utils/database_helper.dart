@@ -14,7 +14,7 @@ class DatabaseHelper {
   // This is the actual database filename that is saved in the docs directory.
   static final _databaseName = "MyCropDatabase.db";
   // Increment this version when you need to change the schema.
-  static final _databaseVersion = 1;
+  static final _databaseVersion = 5;
 
   // Make this a singleton class.
   DatabaseHelper._privateConstructor();
@@ -46,13 +46,16 @@ class DatabaseHelper {
     await db.execute('''
               CREATE TABLE $tableParcel (
                 $columnParcelId INTEGER PRIMARY KEY AUTOINCREMENT,
-                $columnParcelName TEXT NOT NULL,
+                $columnParcelName TEXT NOT NULL UNIQUE,
                 $columnM2 REAL NOT NULL,
                 $columnCrop TEXT NOT NULL,
                 $columnStartTime TEXT NOT NULL,
+                $columnExpectedExpense REAL,
                 $columnIncome REAL,
                 $columnTotalQuantity REAL,
-                $columnCurrentQuantity REAL
+                $columnCurrentQuantity REAL,
+                FOREIGN KEY ($columnCrop) REFERENCES $tableCrop ($columnCropName)
+                 ON DELETE NO ACTION ON UPDATE NO ACTION
               )
               ''');
     await db.execute('''
@@ -60,13 +63,18 @@ class DatabaseHelper {
                 $columnToolId INTEGER PRIMARY KEY AUTOINCREMENT,
                 $columnToolName TEXT NOT NULL,
                 $columnCropName TEXT NOT NULL,
-                $columnActivityType TEXT NOT NULL
+                $columnActivityType TEXT NOT NULL,
+                $columnToolPrice REAL NOT NULL,
+                FOREIGN KEY ($columnCropName) REFERENCES $tableCrop ($columnCropName)
+                 ON DELETE NO ACTION ON UPDATE NO ACTION,
+                FOREIGN KEY ($columnActivityType) REFERENCES $tableActivityType ($columnActivityType)
+                 ON DELETE NO ACTION ON UPDATE NO ACTION
               )
               ''');
     await db.execute('''
               CREATE TABLE $tableCrop (
                 $columnCropId INTEGER PRIMARY KEY AUTOINCREMENT,
-                $columnCropName TEXT NOT NULL
+                $columnCropName TEXT NOT NULL UNIQUE
               )
               ''');
     await db.execute('''
@@ -77,13 +85,18 @@ class DatabaseHelper {
                 $columnStartDay INTEGER NOT NULL,
                 $columnRepeatTimes INTEGER NOT NULL,
                 $columnRepeatDays INTEGER NOT NULL,
-                $columnDescription TEXT NOT NULL
+                $columnExpenseByM2 REAL NOT NULL,
+                $columnDescription TEXT NOT NULL,
+                FOREIGN KEY ($columnCropName) REFERENCES $tableCrop ($columnCropName)
+                 ON DELETE NO ACTION ON UPDATE NO ACTION,
+                FOREIGN KEY ($columnActivityType) REFERENCES $tableActivityType ($columnActivityType)
+                 ON DELETE NO ACTION ON UPDATE NO ACTION
               )
               ''');
     await db.execute('''
               CREATE TABLE $tableActivityType (
                 $columnActivityTypeId INTEGER PRIMARY KEY AUTOINCREMENT,
-                $columnActivityType TEXT NOT NULL
+                $columnActivityType TEXT NOT NULL UNIQUE
               )
               ''');
     await db.execute('''
@@ -94,12 +107,16 @@ class DatabaseHelper {
                 $columnDate TEXT NOT NULL,
                 $columnIncome REAL,
                 $columnExpense REAL,
-                $columnQuantity REAL
+                $columnQuantity REAL,
+                FOREIGN KEY ($columnParcelName) REFERENCES $tableParcel ($columnParcelName)
+                 ON DELETE NO ACTION ON UPDATE NO ACTION,
+                FOREIGN KEY ($columnActivityType) REFERENCES $tableActivityType ($columnActivityType)
+                 ON DELETE NO ACTION ON UPDATE NO ACTION
               )
               ''');
 
     // TODO: _initCrops();
-    debugPrint('Starteded _initCrops [dbHelper]');
+    debugPrint('Started _initCrops [dbHelper]');
     int id;
 
     Map<String, dynamic> cropRow1 = {
@@ -177,6 +194,12 @@ class DatabaseHelper {
     id = await db.insert(tableActivityType, actTypRow8);
     debugPrint('Inserted activity type: $actTypRow8 with id: $id [_initActivityTypes]');
 
+    Map<String, dynamic> actTypRow9 = {
+      columnActivityType : 'Dodatni troškovi'
+    };
+    id = await db.insert(tableActivityType, actTypRow9);
+    debugPrint('Inserted activity type: $actTypRow9 with id: $id [_initActivityTypes]');
+
     // TODO: complete init
     // _initActivities();
     debugPrint('Started _initActivities [dbHelper]');
@@ -187,6 +210,7 @@ class DatabaseHelper {
       columnStartDay : 0,
       columnRepeatTimes : 1,
       columnRepeatDays : 0,
+      columnExpenseByM2 : 30,
       columnDescription : 'Treba delat i to samo jako nema pauze dok nije gotovo'
     };
     id = await db.insert(tableActivity, actRow1);
@@ -198,7 +222,8 @@ class DatabaseHelper {
     Map<String, dynamic> toolRow1 = {
       columnToolName : 'Lopata',
       columnCropName : 'Kukuruz',
-      columnActivityType : 'Obrada tla'
+      columnActivityType : 'Obrada tla',
+      columnToolPrice : 200
     };
     id = await db.insert(tableTool, toolRow1);
     debugPrint('Inserted tool: $toolRow1 with id: $id [_initTools]');
@@ -255,13 +280,9 @@ class DatabaseHelper {
     Database db = await instance.database;
     debugPrint('Entered RefreshParcelInfo [dbHelper]');
 
-    /*String sql = 'SELECT * FROM $tableParcel WHERE $columnParcelName = ?';
-    List<Map<String, dynamic>> parcelMapList = await db.rawQuery(sql, [parcelName]);
-    Parcel parcel = Parcel.fromMap(parcelMapList[0]);*/
-
-    parcel.income = 0;
-    parcel.currentQuantity = 0;
-    parcel.totalQuantity = 0;
+    parcel.income = 0.0;
+    parcel.currentQuantity = 0.0;
+    parcel.totalQuantity = 0.0;
 
     List<Map<String, dynamic>> recordsList = await db.query(tableRecord, where: '$columnParcelName = ?', whereArgs: [parcel.parcelName]);
     int count = recordsList.length;
@@ -269,7 +290,7 @@ class DatabaseHelper {
       Record tmp = Record.fromMap(recordsList[i]);
       parcel.income += (tmp.income - tmp.expense);
       parcel.currentQuantity += tmp.quantity;
-      if (tmp.quantity > 0) {
+      if (tmp.quantity > 0.0) {
         parcel.totalQuantity += tmp.quantity;
       }
     }
@@ -332,7 +353,8 @@ class DatabaseHelper {
   Future<List<Activity>> getCropActivities(String crop) async {
     debugPrint('Entered getCropActivities [dbHelper]');
     Database db = await instance.database;
-    List<Map<String, dynamic>> mapList = await db.query(tableActivity, where: '$columnCropName = ?', whereArgs: [crop]);
+    List<Map<String, dynamic>> mapList =
+    await db.query(tableActivity, where: '$columnCropName = ?', whereArgs: [crop], orderBy: '$columnStartDay');
     int count = mapList.length;
     debugPrint('Maps list: [dbHelper] [getCropActivities]\n' + mapList.toString()
         + '\nCount: $count');
@@ -403,7 +425,8 @@ class DatabaseHelper {
   Future<List<Record>> getParcelRecords(String parcel) async {
     debugPrint('Entered getParcelRecords [dbHelper]');
     Database db = await instance.database;
-    List<Map<String, dynamic>> mapList = await db.query(tableRecord, where: '$columnParcelName = ?', whereArgs: [parcel]);
+    List<Map<String, dynamic>> mapList =
+    await db.query(tableRecord, where: '$columnParcelName = ?', whereArgs: [parcel], orderBy: '$columnDate');
     int count = mapList.length;
     debugPrint('Maps list: [dbHelper] [getParcelRecords]\n' + mapList.toString()
         + '\nCount: $count');
@@ -441,6 +464,7 @@ class DatabaseHelper {
   final String columnM2 = 'm2';
   final String columnCrop = 'crop';
   final String columnStartTime = 'startTime';
+  final String columnExpectedExpense = 'expectedExpense';
   final String columnIncome = 'income';
   final String columnTotalQuantity = 'totalQuantity';
   final String columnCurrentQuantity = 'currentQuantity';
@@ -450,6 +474,7 @@ class DatabaseHelper {
   final String columnToolName = 'toolName';
   final String columnCropName = 'cropName';
   final String columnActivityType = 'activityType';
+  final String columnToolPrice = 'price';
 
   final String tableCrop = 'crop';
   final String columnCropId = '_id';
@@ -462,6 +487,7 @@ class DatabaseHelper {
   final String columnStartDay = 'startDay';
   final String columnRepeatTimes = 'repeatTimes';
   final String columnRepeatDays = 'repeatDays';
+  final String columnExpenseByM2 = 'expenseByM2';
   final String columnDescription = 'description';
 
   final String tableActivityType = 'activityType';

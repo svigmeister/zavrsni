@@ -5,21 +5,23 @@ class Parcel {
   double _m2;
   String _crop;
   String _startTime;
+  double _expectedExpense;
   double _income;
   double _totalQuantity;
   double _currentQuantity;
 
-  Parcel(this._parcelName, this._m2, this._crop, this._startTime, [this._income,
-    this._totalQuantity, this._currentQuantity]);
+  Parcel(this._parcelName, this._m2, this._crop, this._startTime,
+      [this._expectedExpense, this._income, this._totalQuantity, this._currentQuantity]);
 
   Parcel.withId(this._id, this._parcelName, this._m2, this._crop, this._startTime,
-      [this._income, this._totalQuantity, this._currentQuantity]);
+      [this._expectedExpense, this._income, this._totalQuantity, this._currentQuantity]);
 
   int get id => _id;
   String get parcelName => _parcelName;
   double get m2 => _m2;
   String get crop => _crop;
   String get startTime => _startTime;
+  double get expectedExpense => _expectedExpense;
   double get income => _income;
   double get totalQuantity => _totalQuantity;
   double get currentQuantity => _currentQuantity;
@@ -35,6 +37,9 @@ class Parcel {
   }
   set startTime(nTime) {
     this._startTime = (nTime);
+  }
+  set expectedExpense(nExpEx) {
+    this._expectedExpense = nExpEx;
   }
   set income(nIncome) {
     this._income = nIncome;
@@ -56,6 +61,7 @@ class Parcel {
     map['m2'] = _m2;
     map['crop'] = _crop;
     map['startTime'] = _startTime;
+    map['expectedExpense'] = _expectedExpense;
     map['income'] = _income;
     map['totalQuantity'] = _totalQuantity;
     map['currentQuantity'] = _currentQuantity;
@@ -69,6 +75,7 @@ class Parcel {
     this._m2 = map['m2'];
     this._crop = map['crop'];
     this._startTime = map['startTime'];
+    this._expectedExpense = map['expectedExpense'];
     this._income = map['income'];
     this._totalQuantity = map['totalQuantity'];
     this._currentQuantity = map['currentQuantity'];
@@ -78,8 +85,10 @@ class Parcel {
   String toString() {
     return '_Id parcele: ' + this.id.toString() + '\nIme parcele: ' + this.parcelName
         + '\nPovršina: ' + this.m2.toString() + '\nUsjev: ' + this.crop
-        + '\nPočetak radova: ' + this.startTime + '\nZarada: ' + this.income.toString()
-        + '\nTotalna dobivena količina: ' + this.totalQuantity.toString()
-        + '\nTreuntna količina: ' + this.currentQuantity.toString();
+        + '\nPočetak radova: ' + this.startTime + '\nOčekivani troškovi: '
+        + this.expectedExpense.toStringAsPrecision(2) + '\nZarada: '
+        + this.income.toStringAsPrecision(2) + '\nTotalna dobivena količina: '
+        + this.totalQuantity.toStringAsPrecision(2) + '\nTreuntna količina: '
+        + this.currentQuantity.toStringAsPrecision(2);
   }
 }

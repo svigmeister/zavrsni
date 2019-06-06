@@ -4,15 +4,17 @@ class Tool {
   String _toolName;
   String _cropName;
   String _activityType;
+  double _price;
 
-  Tool(this._toolName, this._cropName, this._activityType);
+  Tool(this._toolName, this._cropName, this._activityType, this._price);
 
-  Tool.withId(this._id, this._toolName, this._cropName, this._activityType);
+  Tool.withId(this._id, this._toolName, this._cropName, this._activityType, this._price);
 
   int get id => _id;
   String get toolName => _toolName;
   String get cropName => _cropName;
   String get activityType => _activityType;
+  double get price => _price;
 
   set toolName(nName) {
     this._toolName = nName;
@@ -22,6 +24,9 @@ class Tool {
   }
   set activityType(nActivityType) {
     this._activityType = nActivityType;
+  }
+  set price(nPrice) {
+    this._price = nPrice;
   }
 
   Map<String, dynamic> toMap() {
@@ -33,6 +38,7 @@ class Tool {
     map['toolName'] = _toolName;
     map['cropName'] = _cropName;
     map['activityType'] = _activityType;
+    map['price'] = _price;
 
     return map;
   }
@@ -42,5 +48,6 @@ class Tool {
     this._toolName = map['toolName'];
     this._cropName = map['cropName'];
     this._activityType = map['activityType'];
+    this._price = map['price'];
   }
 }

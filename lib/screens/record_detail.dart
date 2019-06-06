@@ -28,7 +28,6 @@ class RecordDetailState extends State<RecordDetail> {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle textStyle = Theme.of(context).textTheme.title;
     List<Widget> gridList = <Widget> [
       Padding(
           padding: EdgeInsets.all(4.0),
@@ -52,7 +51,7 @@ class RecordDetailState extends State<RecordDetail> {
       ),
       Padding(
           padding: EdgeInsets.all(4.0),
-          child: Text(parcel.m2.toString() + ' m^2')
+          child: Text(parcel.m2.toStringAsFixed(2) + ' m^2')
       ),
       Padding(
           padding: EdgeInsets.all(4.0),
@@ -67,11 +66,11 @@ class RecordDetailState extends State<RecordDetail> {
 
       Padding(
           padding: EdgeInsets.all(4.0),
-          child: Text('Dobivena/prodana količina:')
+          child: Text('Dobivena količina:')
       ),
       Padding(
           padding: EdgeInsets.all(4.0),
-          child: Text(record.quantity.toString() + ' kg')
+          child: Text(record.quantity.toStringAsFixed(2) + ' kg')
       ),
 
 
@@ -81,7 +80,7 @@ class RecordDetailState extends State<RecordDetail> {
       ),
       Padding(
           padding: EdgeInsets.all(4.0),
-          child: Text(record.expense.toString() + ' HRK')
+          child: Text(record.expense.toStringAsFixed(2) + ' HRK')
       ),
       Padding(
           padding: EdgeInsets.all(4.0),
@@ -89,7 +88,7 @@ class RecordDetailState extends State<RecordDetail> {
       ),
       Padding(
           padding: EdgeInsets.all(4.0),
-          child: Text(record.income.toString() + ' HRK')
+          child: Text(record.income.toStringAsFixed(2) + ' HRK')
       ),
       Padding(
         padding: EdgeInsets.all(4.0),

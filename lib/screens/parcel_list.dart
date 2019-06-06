@@ -36,7 +36,6 @@ class ParcelListState extends State<ParcelList> {
 
   Widget getParcelListView() {
     debugPrint('Entered getParcelListView [parcel_list]');
-    TextStyle textStyle = Theme.of(context).textTheme.title;
     DatabaseHelper dbHelper = DatabaseHelper.instance;
     return FutureBuilder<List<Parcel>>(
       future: dbHelper.getAllParcels(),

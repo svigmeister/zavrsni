@@ -61,7 +61,7 @@ class ParcelDetailState extends State<ParcelDetail> {
       ),
       Padding(
           padding: EdgeInsets.all(4.0),
-          child: Text(parcel.totalQuantity.toString() + ' kg')
+          child: Text(parcel.totalQuantity.toStringAsFixed(2) + ' kg')
       ),
       Padding(
           padding: EdgeInsets.all(4.0),
@@ -69,7 +69,15 @@ class ParcelDetailState extends State<ParcelDetail> {
       ),
       Padding(
           padding: EdgeInsets.all(4.0),
-          child: Text(parcel.currentQuantity.toString() + ' kg')
+          child: Text(parcel.currentQuantity.toStringAsFixed(2) + ' kg')
+      ),
+      Padding(
+          padding: EdgeInsets.all(4.0),
+          child: Text('Očekivana ukupna ulaganja :')
+      ),
+      Padding(
+          padding: EdgeInsets.all(4.0),
+          child: Text(parcel.expectedExpense.toStringAsFixed(2) + ' HRK')
       ),
       Padding(
           padding: EdgeInsets.all(4.0),
@@ -77,7 +85,7 @@ class ParcelDetailState extends State<ParcelDetail> {
       ),
       Padding(
           padding: EdgeInsets.all(4.0),
-          child: Text(parcel.income.toString() + ' HRK')
+          child: Text(parcel.income.toStringAsFixed(2) + ' HRK')
       ),
       Padding(
           padding: EdgeInsets.all(4.0),
@@ -179,6 +187,9 @@ class ParcelDetailState extends State<ParcelDetail> {
 
     int nbr = await dbHelper.deleteAllRecords(parcel.parcelName);
     debugPrint('Delete records returned: $nbr [parcel_detail]');
+
+    int id2 = await dbHelper.refreshParcelInfo(parcel);
+    debugPrint('Refresh returned id: $id2 [record_form]');
   }
 
   void navigateToParcelForm(Parcel parcel, String title) async {

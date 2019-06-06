@@ -3,31 +3,36 @@ import 'package:intl/intl.dart';
 
 import '../models/tool.dart';
 import '../models/activity.dart';
+import '../models/parcel.dart';
+import '../models/record.dart';
 import '../utils/database_helper.dart';
 
 // Create a Widget
 class ActivityDetail extends StatefulWidget {
   final String appBarTitle;
   final Activity activity;
+  final Parcel parcel;
+  final List<Record> parcelRecords;
 
-  ActivityDetail(this.appBarTitle, this.activity);
+  ActivityDetail(this.appBarTitle, this.activity, this.parcel, this.parcelRecords);
 
   @override
   State<StatefulWidget> createState() {
-    return ActivityDetailState(this.activity, this.appBarTitle);
+    return ActivityDetailState(this. parcelRecords, this. parcel, this.activity, this.appBarTitle);
   }
 }
 
 // This class will hold the data related to the parcel details
 class ActivityDetailState extends State<ActivityDetail> {
   Activity activity;
+  Parcel parcel;
   String appBarTitle;
+  List<Record> parcelRecords;
 
-  ActivityDetailState(this.activity, this.appBarTitle);
+  ActivityDetailState(this.parcelRecords, this.parcel, this.activity, this.appBarTitle);
 
   @override
   Widget build(BuildContext context) {
-    TextStyle textStyle = Theme.of(context).textTheme.title;
     DatabaseHelper dbHelper = DatabaseHelper.instance;
     List<Widget> gridList = <Widget> [
       Padding(
@@ -46,6 +51,9 @@ class ActivityDetailState extends State<ActivityDetail> {
           padding: EdgeInsets.all(4.0),
           child: Text(activity.description)
       ),
+      // Dynamic, only for some activities show start date row
+      showStartDate1(),
+      showStartDate2(),
       Padding(
           padding: EdgeInsets.all(4.0),
           child: Text('Popis alata:')
@@ -60,16 +68,21 @@ class ActivityDetailState extends State<ActivityDetail> {
                       itemCount: snapshot.data.length,
                       itemBuilder: (BuildContext context, int index) {
                         Tool listedTool = snapshot.data[index];
-                        return Center(
-                            child: Text(listedTool.toolName)
+                        return Card(
+                          child: ListTile(
+                            title: Text(listedTool.toolName),
+                            trailing: Text(listedTool.price.toStringAsFixed(2) + ' HRK'),
+                          )
                         );
                       });
                 } else {
-                  return Center(child: CircularProgressIndicator());
+                  return Text('Za ovu aktivnost alati nisu potrebni');
                 }
               }
           )
       ),
+      showExpectedExpense1(),
+      showExpectedExpense2()
     ];
 
     return WillPopScope(
@@ -99,6 +112,76 @@ class ActivityDetailState extends State<ActivityDetail> {
             )
         )
     );
+  }
+
+  Widget showStartDate1() {
+    if(activity.activityType == 'Berba' || activity.activityType == 'Prodaja' ||
+        activity.activityType == 'Dodatni troškovi') {
+      return Padding(padding: EdgeInsets.all(1.0));
+    } else {
+      return Padding(
+          padding: EdgeInsets.all(4.0),
+          child: Text('Početak radova:')
+      );
+    }
+  }
+
+  Widget showStartDate2() {
+    if(activity.activityType == 'Berba' || activity.activityType == 'Prodaja' ||
+        activity.activityType == 'Dodatni troškovi') {
+      return Padding(padding: EdgeInsets.all(1.0));
+    } else {
+      String activityWorkStart;
+      DateTime latestWorkStart = DateTime.parse(parcel.startTime);
+      int count = parcelRecords.length;
+
+      for(int i = 0; i < count; i++) {
+        if(parcelRecords[i].activityType == activity.activityType) {
+          if(DateTime.parse(parcelRecords[i].date).isAfter(latestWorkStart)) {
+            latestWorkStart = DateTime.parse(parcelRecords[i].date);
+          }
+        }
+      }
+      // If this activity has already been done, add repeatDays number of days
+      // to the latest occurrence of the activity, else if this is the first
+      // occurrence of the activity, add initial number of days to the parcel
+      // startTime date
+      if(latestWorkStart.isAfter(DateTime.parse(parcel.startTime))) {
+        activityWorkStart = DateFormat('dd-MM-yyyy').format(
+            latestWorkStart.add(new Duration(days: activity.repeatDays)));
+      } else {
+        activityWorkStart = DateFormat('dd-MM-yyyy').format(
+            latestWorkStart.add(new Duration(days: activity.startDay)));
+      }
+      return Padding(
+          padding: EdgeInsets.all(4.0),
+          child: Text(activityWorkStart)
+      );
+    }
+  }
+
+  Widget showExpectedExpense1() {
+    if(activity.activityType == 'Berba' || activity.activityType == 'Prodaja' ||
+        activity.activityType == 'Dodatni troškovi') {
+      return Padding(padding: EdgeInsets.all(1.0));
+    } else {
+      return Padding(
+          padding: EdgeInsets.all(4.0),
+          child: Text('Troškovi materijala (bez alata):')
+      );
+    }
+  }
+
+  Widget showExpectedExpense2() {
+    if(activity.activityType == 'Berba' || activity.activityType == 'Prodaja' ||
+        activity.activityType == 'Dodatni troškovi') {
+      return Padding(padding: EdgeInsets.all(1.0));
+    } else {
+      return Padding(
+          padding: EdgeInsets.all(4.0),
+          child: Text((activity.expenseByM2 * parcel.m2).toStringAsFixed(2) + ' HRK')
+      );
+    }
   }
 
   void moveToLastScreen() {

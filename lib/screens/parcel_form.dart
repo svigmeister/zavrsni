@@ -42,8 +42,8 @@ class ParcelFormState extends State<ParcelForm> {
     final DateTime picked = await showDatePicker(
         context: context,
         initialDate: DateTime.parse(parcel.startTime),
-        firstDate: DateTime(2010),
-        lastDate: DateTime(2060));
+        firstDate: DateTime(2018),
+        lastDate: DateTime(2096));
     if (picked != null)
       setState(() {
         selectedDate = picked;
@@ -179,6 +179,7 @@ class ParcelFormState extends State<ParcelForm> {
                   _catchDateInput(selectedDate);
                   if (appBarTitle == 'Nova parcela') {
                     _saveParcel(parcel);
+                    // _showAlertDialog(context, 'Parcel info:', parcel.toString());
                     moveToLastScreen();
                   } else {
                     _updateParcel(parcel);
@@ -209,7 +210,10 @@ class ParcelFormState extends State<ParcelForm> {
   void _saveParcel(Parcel parcelToSave) async {
     debugPrint('Entered _saveParcel method [parcel_form]');
     DatabaseHelper dbHelper = DatabaseHelper.instance;
-    // _showAlertDialog(context, 'Parcel info:', parcel.parcelName);
+    //TODO: izračunaj očekivane troškove
+    if (parcelToSave.expectedExpense == null) {
+      parcelToSave.expectedExpense = 0.0;
+    }
     if (parcelToSave.income == null) {
       parcelToSave.income = 0.0;
     }

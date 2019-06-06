@@ -5,6 +5,7 @@ import '../models/parcel.dart';
 import '../models/record.dart';
 import '../screens/record_detail.dart';
 import '../utils/database_helper.dart';
+import '../utils/decorations.dart';
 
 // Create a List Widget
 class RecordList extends StatefulWidget {
@@ -62,7 +63,7 @@ class RecordListState extends State<RecordList> {
                     navigateToRecordDetail(listedRecord, parcel);
                     setState(() {});
                   },
-                  trailing: Text((listedRecord.income - listedRecord.expense).toString()),
+                  trailing: doubleToColouredText((listedRecord.income - listedRecord.expense)),
                 );
               });
         } else {
