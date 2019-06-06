@@ -126,7 +126,7 @@ class ParcelDetailState extends State<ParcelDetail> {
               onPressed: () {
                 debugPrint('User clicked button obriši zapise [parcel detail]');
                 _deleteParcelRecords(parcel);
-              },
+                },
               child: Text('Obriši zapise')
           )
       )

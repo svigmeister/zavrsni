@@ -149,6 +149,9 @@ class RecordFormState extends State<RecordForm> {
               },
             ),
           ),
+
+          // TODO: dynamic view
+
           Padding(
             padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
             child: TextFormField(
@@ -176,9 +179,11 @@ class RecordFormState extends State<RecordForm> {
               },
             ),
           ),
-          Text(DateFormat('dd-MM-yyyy').format(selectedDate)),
-          SizedBox(
-            height: 20.0,
+
+
+          Padding(
+            padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
+            child: Text(DateFormat('dd-MM-yyyy').format(selectedDate))
           ),
           RaisedButton(
             onPressed: () => _selectDate(context),
@@ -192,8 +197,7 @@ class RecordFormState extends State<RecordForm> {
                 // Validate will return true if the form is valid, or false if
                 // the form is invalid.
                 if (_recordFormKey.currentState.validate()) {
-                  _catchUserInput(expenseController.text, incomeController.text,
-                      quantityController.text, selectedDate);
+                  _catchDateInput(selectedDate);
                   if (appBarTitle == 'Novi zapis') {
                     _saveRecord(record, parcel);
                     moveToLastScreen();
@@ -215,6 +219,10 @@ class RecordFormState extends State<RecordForm> {
     debugPrint('Entered _saveRecord method [record_form]');
     DatabaseHelper dbHelper = DatabaseHelper.instance;
 
+    if (recordToSave.quantity == null) {
+      recordToSave.quantity = 0.0;
+    }
+
     debugPrint('recordToSave: [record_form]\n' + recordToSave.toString());
     int id = await dbHelper.insertRecord(recordToSave.toMap());
     debugPrint('Save returned id: $id [record_form]');
@@ -235,7 +243,7 @@ class RecordFormState extends State<RecordForm> {
     // If the record is updated, we need to delete old and insert new data
     debugPrint('Parcel to be updated: [record form]\n' + recordsParcel.toString());
     int id2 = await dbHelper.refreshParcelInfo(recordsParcel);
-    debugPrint('Refresh returned id: $id2 [record_detail]');
+    debugPrint('Refresh returned id: $id2 [record_form]');
   }
 
   void updateExpense() {
@@ -250,18 +258,14 @@ class RecordFormState extends State<RecordForm> {
 
   void updateQuantity() {
     oldQuantity = record.quantity;
-    record.quantity = double.parse(quantityController.text);
+    double tmpQty = double.parse(quantityController.text);
+    if (record.activityType == 'Prodaja') {
+      tmpQty -= (2 * tmpQty);
+    }
+    record.quantity = tmpQty;
   }
 
-  void _catchUserInput(String expense, String income, String qty, DateTime date) {
-    record.expense = double.parse(expense);
-    record.income = double.parse(income);
-    if (this.record.activityType == 'Prodaja') {
-      double negativeQty = double.parse(qty);
-      negativeQty -= (2 * negativeQty);
-      record.quantity = negativeQty;
-    }
-    record.quantity = double.parse(qty);
+  void _catchDateInput(DateTime date) {
     record.date = DateFormat('yyyy-MM-dd').format(date);
   }
 

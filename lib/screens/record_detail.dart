@@ -62,6 +62,9 @@ class RecordDetailState extends State<RecordDetail> {
           padding: EdgeInsets.all(4.0),
           child: Text(DateFormat('dd-MM-yyyy').format(DateTime.parse(record.date)))
       ),
+
+      // TODO: dynamic view
+
       Padding(
           padding: EdgeInsets.all(4.0),
           child: Text('Dobivena/prodana količina:')
@@ -70,6 +73,8 @@ class RecordDetailState extends State<RecordDetail> {
           padding: EdgeInsets.all(4.0),
           child: Text(record.quantity.toString() + ' kg')
       ),
+
+
       Padding(
           padding: EdgeInsets.all(4.0),
           child: Text('Troškovi:')

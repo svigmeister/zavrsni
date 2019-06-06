@@ -176,8 +176,7 @@ class ParcelFormState extends State<ParcelForm> {
                 // Validate will return true if the form is valid, or false if
                 // the form is invalid.
                 if (_parcelFormKey.currentState.validate()) {
-                  _catchUserInput(parcelNameController.text, m2Controller.text,
-                      selectedDate);
+                  _catchDateInput(selectedDate);
                   if (appBarTitle == 'Nova parcela') {
                     _saveParcel(parcel);
                     moveToLastScreen();
@@ -241,9 +240,7 @@ class ParcelFormState extends State<ParcelForm> {
     }
   }
 
-  void _catchUserInput(String parcelName, String m2, DateTime date) {
-    parcel.parcelName = parcelName;
-    parcel.m2 = double.parse(m2);
+  void _catchDateInput(DateTime date) {
     parcel.startTime = DateFormat('yyyy-MM-dd').format(date);
   }
 
