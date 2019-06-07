@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../models/parcel.dart';
+import '../models/activity.dart';
+import '../models/tool.dart';
 import '../utils/database_helper.dart';
 
 // Create a Form Widget
@@ -210,7 +212,6 @@ class ParcelFormState extends State<ParcelForm> {
   void _saveParcel(Parcel parcelToSave) async {
     debugPrint('Entered _saveParcel method [parcel_form]');
     DatabaseHelper dbHelper = DatabaseHelper.instance;
-    //TODO: izračunaj očekivane troškove
     if (parcelToSave.expectedExpense == null) {
       parcelToSave.expectedExpense = 0.0;
     }
@@ -222,6 +223,19 @@ class ParcelFormState extends State<ParcelForm> {
     }
     if (parcelToSave.totalQuantity == null) {
       parcelToSave.totalQuantity = 0.0;
+    }
+
+    List<Activity> parcelCropActivities = await dbHelper.getCropActivities(parcelToSave.crop);
+    int count = parcelCropActivities.length;
+    for(int i = 0; i < count; i++) {
+      parcelToSave.expectedExpense += (parcelToSave.m2 * parcelCropActivities[i].expenseByM2);
+      List<Tool> activityTools = await dbHelper.getActivityTools(parcelCropActivities[i]);
+      int toolCount = activityTools.length;
+      if (toolCount > 0) {
+        for (int j = 0; j < toolCount; j++) {
+          parcelToSave.expectedExpense += activityTools[j].price;
+        }
+      }
     }
 
     debugPrint('parcelToSave: [parcel_form]\n' + parcelToSave.toString());

@@ -11,19 +11,21 @@ import '../utils/database_helper.dart';
 // Create a List Widget
 class ActivityList extends StatefulWidget {
   final Parcel parcel;
+  final List<Record> parcelRecords;
 
-  ActivityList(this.parcel);
+  ActivityList(this.parcel, this.parcelRecords);
 
   @override
   State<StatefulWidget> createState() {
-    return ActivityListState(this.parcel);
+    return ActivityListState(this.parcel, this.parcelRecords);
   }
 }
 
 class ActivityListState extends State<ActivityList> {
   Parcel parcel;
+  List<Record> parcelRecords;
 
-  ActivityListState(this.parcel);
+  ActivityListState(this.parcel, this.parcelRecords);
 
   @override
   Widget build(BuildContext context) {
@@ -57,24 +59,39 @@ class ActivityListState extends State<ActivityList> {
               itemCount: snapshot.data.length,
               itemBuilder: (BuildContext context, int index) {
                 Activity listedActivity = snapshot.data[index];
-                // TODO: ne prikaži koje ne treba
-                return ListTile(
+                int recordCount = parcelRecords.length;
+                int activityRepeat = listedActivity.repeatTimes;
+
+                // Check all parcel's records and count the number of times this
+                // activity has already been done
+                for(int i = 0; i < recordCount; i++) {
+                  if(parcelRecords[i].activityType == listedActivity.activityType) {
+                    activityRepeat -= 1;
+                  }
+                }
+
+                // If we did the activity enough times don't show it in the list
+                if(activityRepeat < 1) {
+                  return Padding(padding: EdgeInsets.only(top: 1.0));
+                } else {
+                  return ListTile(
                     title: Text(listedActivity.activityType),
                     onTap: () {
                       navigateToActivityDetail(listedActivity, listedActivity.activityType);
                       setState(() {});
                     },
-                  trailing: IconButton(
-                      icon: Icon(Icons.check),
-                      onPressed: () {
-                        debugPrint('User clicked "check" on an activity [activity list]');
-                        DateTime now = DateTime.now();
-                        String formattedDate = DateFormat('yyyy-MM-dd').format(now);
-                        navigateToRecordForm(
-                            Record(parcel.parcelName, listedActivity.activityType, formattedDate, 0, 0, 0),
-                            parcel, 'Novi zapis');
-                      }),
-                );
+                    trailing: IconButton(
+                        icon: Icon(Icons.check),
+                        onPressed: () {
+                          debugPrint('User clicked "check" on an activity [activity list]');
+                          DateTime now = DateTime.now();
+                          String formattedDate = DateFormat('yyyy-MM-dd').format(now);
+                          navigateToRecordForm(
+                              Record(parcel.parcelName, listedActivity.activityType, formattedDate, 0, 0, 0),
+                              parcel, 'Novi zapis');
+                        }),
+                  );
+                }
               });
         } else {
           return Center(child: CircularProgressIndicator());

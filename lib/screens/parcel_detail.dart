@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../models/parcel.dart';
+import '../models/record.dart';
 import '../screens/parcel_form.dart';
 import '../screens/record_list.dart';
 import '../screens/activity_list.dart';
@@ -29,7 +30,6 @@ class ParcelDetailState extends State<ParcelDetail> {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle textStyle = Theme.of(context).textTheme.title;
     List<Widget> gridList = <Widget> [
       Padding(
           padding: EdgeInsets.all(4.0),
@@ -205,8 +205,10 @@ class ParcelDetailState extends State<ParcelDetail> {
   }
 
   void navigateToActivityList(Parcel parcel) async {
+    DatabaseHelper dbHelper = DatabaseHelper.instance;
+    List<Record> parcelRecords = await dbHelper.getParcelRecords(parcel.parcelName);
     await Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return ActivityList(parcel);
+      return ActivityList(parcel, parcelRecords);
     }));
   }
 
