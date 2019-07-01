@@ -61,19 +61,6 @@ class RecordDetailState extends State<RecordDetail> {
           padding: EdgeInsets.all(4.0),
           child: Text(DateFormat('dd-MM-yyyy').format(DateTime.parse(record.date)))
       ),
-
-      // TODO: dynamic view
-
-      Padding(
-          padding: EdgeInsets.all(4.0),
-          child: Text('Dobivena količina:')
-      ),
-      Padding(
-          padding: EdgeInsets.all(4.0),
-          child: Text(record.quantity.toStringAsFixed(2) + ' kg')
-      ),
-
-
       Padding(
           padding: EdgeInsets.all(4.0),
           child: Text('Troškovi:')
@@ -90,6 +77,11 @@ class RecordDetailState extends State<RecordDetail> {
           padding: EdgeInsets.all(4.0),
           child: Text(record.income.toStringAsFixed(2) + ' HRK')
       ),
+
+      // Dynamic view, show quantity info only for some records
+      showQuantity1(),
+      showQuantity2(),
+
       Padding(
         padding: EdgeInsets.all(4.0),
         child: RaisedButton(
@@ -132,7 +124,7 @@ class RecordDetailState extends State<RecordDetail> {
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 childAspectRatio: MediaQuery.of(context).size.width /
-                    (MediaQuery.of(context).size.height / 4),
+                    (MediaQuery.of(context).size.height / 8),
               ),
               itemCount: gridList.length,
               itemBuilder: (context, index) {
@@ -141,6 +133,33 @@ class RecordDetailState extends State<RecordDetail> {
             )
         )
     );
+  }
+
+  Widget showQuantity1() {
+    if(record.activityType == 'Berba') {
+      return Padding(
+          padding: EdgeInsets.all(4.0),
+          child: Text('Ubrana količina:')
+      );
+    } else if(record.activityType == 'Prodaja') {
+      return Padding(
+          padding: EdgeInsets.all(4.0),
+          child: Text('Prodana količina:')
+      );
+    } else {
+      return SizedBox.shrink();
+    }
+  }
+
+  Widget showQuantity2() {
+    if(record.activityType == 'Berba' || record.activityType == 'Prodaja') {
+      return Padding(
+          padding: EdgeInsets.all(4.0),
+          child: Text(record.quantity.toStringAsFixed(2) + ' kg')
+      );
+    }  else {
+      return SizedBox.shrink();
+    }
   }
 
   void _deleteRecord(Record recordToDelete, Parcel parcel) async {

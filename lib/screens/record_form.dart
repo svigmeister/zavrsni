@@ -56,7 +56,6 @@ class RecordFormState extends State<RecordForm> {
   @override
   Widget build(BuildContext context) {
     // Build a Form widget using the _parcelFormKey we created above
-    TextStyle textStyle = Theme.of(context).textTheme.title;
     expenseController.text = record.expense.toString();
     incomeController.text = record.income.toString();
     quantityController.text = record.quantity.toString();
@@ -150,36 +149,8 @@ class RecordFormState extends State<RecordForm> {
             ),
           ),
 
-          // TODO: dynamic view
-
-          Padding(
-            padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
-            child: TextFormField(
-              controller: quantityController,
-              style: textStyle,
-              decoration: InputDecoration(
-                  labelText: 'Količina',
-                  labelStyle: textStyle,
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(4.5))),
-              onEditingComplete: () {
-                updateQuantity();
-              },
-              validator: (value) {
-                RegExp numRegex = new RegExp(r'^[0-9]+(\.[0-9]+)?$');
-                if (value.isEmpty) {
-                  return 'Unesite iznos količine!';
-                }
-                if (!numRegex.hasMatch(value)) {
-                  return 'Unesite brojčanu vrijednost (za decimalni zapis koristite točku)!';
-                }
-                if (double.parse(value) < 0) {
-                  return 'Unesite pozitivan iznos!';
-                }
-              },
-            ),
-          ),
-
+          // Dynamic view, show quantity field only for some activities/records
+          showQuantityInput(textStyle),
 
           Padding(
             padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
@@ -213,6 +184,40 @@ class RecordFormState extends State<RecordForm> {
         ],
       ),
     );
+  }
+
+  Widget showQuantityInput(TextStyle ts) {
+    if(record.activityType == 'Berba' || record.activityType == 'Prodaja') {
+      return Padding(
+        padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
+        child: TextFormField(
+          controller: quantityController,
+          style: ts,
+          decoration: InputDecoration(
+              labelText: 'Količina',
+              labelStyle: ts,
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(4.5))),
+          onEditingComplete: () {
+            updateQuantity();
+          },
+          validator: (value) {
+            RegExp numRegex = new RegExp(r'^[0-9]+(\.[0-9]+)?$');
+            if (value.isEmpty) {
+              return 'Unesite iznos količine!';
+            }
+            if (!numRegex.hasMatch(value)) {
+              return 'Unesite brojčanu vrijednost (za decimalni zapis koristite točku)!';
+            }
+            if (double.parse(value) < 0) {
+              return 'Unesite pozitivan iznos!';
+            }
+          },
+        ),
+      );
+    } else {
+      return Padding(padding: EdgeInsets.all(1.0));
+    }
   }
 
   void _saveRecord(Record recordToSave, Parcel recordsParcel) async {

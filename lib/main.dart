@@ -12,7 +12,8 @@ class MyApp extends StatelessWidget {
       title: 'MyCrop',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-          primarySwatch: Colors.brown
+          primaryColor: Colors.brown[600],
+          cardColor: Colors.blue[200]
       ),
       home: ParcelList(),
     );

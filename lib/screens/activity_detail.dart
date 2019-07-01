@@ -51,9 +51,6 @@ class ActivityDetailState extends State<ActivityDetail> {
           padding: EdgeInsets.all(4.0),
           child: Text(activity.description)
       ),
-      // Dynamic, only for some activities show start date row
-      showStartDate1(),
-      showStartDate2(),
       Padding(
           padding: EdgeInsets.all(4.0),
           child: Text('Popis alata:')
@@ -69,10 +66,16 @@ class ActivityDetailState extends State<ActivityDetail> {
                       itemBuilder: (BuildContext context, int index) {
                         Tool listedTool = snapshot.data[index];
                         return Card(
-                          child: ListTile(
-                            title: Text(listedTool.toolName),
-                            trailing: Text(listedTool.price.toStringAsFixed(2) + ' HRK'),
-                          )
+                          child: Row(
+                            children: <Widget>[
+                              Expanded(
+                                  child: Text(listedTool.toolName + ':  ' +
+                                      listedTool.price.toStringAsFixed(2) +
+                                      ' HRK'),
+                                  flex: 1
+                              )
+                            ],
+                          ),
                         );
                       });
                 } else {
@@ -81,8 +84,12 @@ class ActivityDetailState extends State<ActivityDetail> {
               }
           )
       ),
+      // Dynamic view
       showExpectedExpense1(),
-      showExpectedExpense2()
+      showExpectedExpense2(),
+      // Dynamic, show start date row only for some activities
+      showStartDate1(),
+      showStartDate2(),
     ];
 
     return WillPopScope(
@@ -167,7 +174,7 @@ class ActivityDetailState extends State<ActivityDetail> {
     } else {
       return Padding(
           padding: EdgeInsets.all(4.0),
-          child: Text('Troškovi materijala (bez alata):')
+          child: Text('Troškovi materijala:')
       );
     }
   }

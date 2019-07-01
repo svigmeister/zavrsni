@@ -13,6 +13,7 @@ class ParcelDetail extends StatefulWidget {
   final String appBarTitle;
   final Parcel parcel;
 
+  // Widget constructor
   ParcelDetail(this.appBarTitle, this.parcel);
 
   @override
@@ -21,7 +22,7 @@ class ParcelDetail extends StatefulWidget {
   }
 }
 
-// This class will hold the data related to the parcel details
+// This class will hold the data related to the parcel's details
 class ParcelDetailState extends State<ParcelDetail> {
   Parcel parcel;
   String appBarTitle;
@@ -73,7 +74,7 @@ class ParcelDetailState extends State<ParcelDetail> {
       ),
       Padding(
           padding: EdgeInsets.all(4.0),
-          child: Text('Očekivana ukupna ulaganja :')
+          child: Text('Očekivana ulaganja:')
       ),
       Padding(
           padding: EdgeInsets.all(4.0),
