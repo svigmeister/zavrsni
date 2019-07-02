@@ -85,7 +85,12 @@ class ActivityDetailState extends State<ActivityDetail> {
                         );
                       });
                 } else {
-                  return Text('Za ovu aktivnost alati nisu potrebni');
+                  return ListTile(
+                    // This isn't showing
+                    title: Text(
+                        'Za ovu aktivnost alati nisu potrebni.',
+                        style: TextStyle(fontSize: 16.0))
+                  );
                 }
               }
           )
@@ -195,7 +200,7 @@ class ActivityDetailState extends State<ActivityDetail> {
           child: RichText(
             text: TextSpan(
                 text: (activity.expenseByM2 * parcel.m2).toStringAsFixed(2) + ' HRK',
-                style: TextStyle(color: Colors.red)
+                style: TextStyle(color: Colors.red, fontSize: 16.0)
             ),
           )
       );

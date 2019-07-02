@@ -70,7 +70,7 @@ class RecordDetailState extends State<RecordDetail> {
           child: RichText(
               text: TextSpan(
                   text: record.expense.toStringAsFixed(2) + ' HRK',
-                  style: TextStyle(color: Colors.red)
+                  style: TextStyle(color: Colors.red, fontSize: 16.0)
               ))
       ),
       Padding(
@@ -82,7 +82,7 @@ class RecordDetailState extends State<RecordDetail> {
           child: RichText(
               text: TextSpan(
                   text: record.income.toStringAsFixed(2) + ' HRK',
-                  style: TextStyle(color: Colors.green)
+                  style: TextStyle(color: Colors.green, fontSize: 16.0)
               ))
       ),
 

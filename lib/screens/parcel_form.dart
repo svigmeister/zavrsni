@@ -145,7 +145,7 @@ class ParcelFormState extends State<ParcelForm> {
               controller: m2Controller,
               style: textStyle,
               decoration: InputDecoration(
-                  labelText: 'Površina',
+                  labelText: 'Površina u metrima kvadratnim',
                   labelStyle: textStyle,
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(4.5))),
@@ -267,7 +267,7 @@ class ParcelFormState extends State<ParcelForm> {
     parcel.startTime = DateFormat('yyyy-MM-dd').format(date);
   }
 
-  Future<void> _showAlertDialog(
+   /* Future<void> _showAlertDialog(
       BuildContext context, String title, String message) {
     return showDialog<void>(
       context: context,
@@ -284,7 +284,7 @@ class ParcelFormState extends State<ParcelForm> {
         );
       },
     );
-  }
+  } */
 
   void moveToLastScreen() {
     Navigator.pop(context, true);

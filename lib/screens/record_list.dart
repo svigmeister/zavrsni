@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import '../models/parcel.dart';
 import '../models/record.dart';
@@ -47,7 +46,6 @@ class RecordListState extends State<RecordList> {
 
   Widget getRecordListView() {
     debugPrint('Entered getRecordListView [record_list]');
-    TextStyle textStyle = Theme.of(context).textTheme.title;
     DatabaseHelper dbHelper = DatabaseHelper.instance;
     return FutureBuilder<List<Record>>(
       future: dbHelper.getParcelRecords(parcel.parcelName),
@@ -58,7 +56,9 @@ class RecordListState extends State<RecordList> {
               itemBuilder: (BuildContext context, int index) {
                 Record listedRecord = snapshot.data[index];
                 return ListTile(
-                  title: Text(listedRecord.activityType),
+                  title: Text(
+                      listedRecord.activityType,
+                      style: TextStyle(fontSize: 16.0)),
                   onTap: () {
                     navigateToRecordDetail(listedRecord, parcel);
                     setState(() {});

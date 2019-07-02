@@ -82,7 +82,7 @@ class ParcelDetailState extends State<ParcelDetail> {
           child: RichText(
               text: TextSpan(
                   text: parcel.expectedExpense.toStringAsFixed(2) + ' HRK',
-                  style: TextStyle(color: Colors.red)
+                  style: TextStyle(color: Colors.red, fontSize: 16.0)
               ))
       ),
       Padding(
@@ -94,7 +94,7 @@ class ParcelDetailState extends State<ParcelDetail> {
           child: RichText(
               text: TextSpan(
                   text: parcel.expectedIncome.toStringAsFixed(2) + ' HRK',
-                  style: TextStyle(color: Colors.green)
+                  style: TextStyle(color: Colors.green, fontSize: 16.0)
               ))
       ),
       Padding(

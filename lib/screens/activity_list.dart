@@ -75,7 +75,9 @@ class ActivityListState extends State<ActivityList> {
                   return Padding(padding: EdgeInsets.only(top: 1.0));
                 } else {
                   return ListTile(
-                    title: Text(listedActivity.activityType),
+                    title: Text(
+                        listedActivity.activityType,
+                        style: TextStyle(fontSize: 16.0)),
                     onTap: () {
                       navigateToActivityDetail(listedActivity, listedActivity.activityType);
                       setState(() {});

@@ -14,7 +14,7 @@ class DatabaseHelper {
   // This is the actual database filename that is saved in the docs directory.
   static final _databaseName = "MyCropDatabase.db";
   // Increment this version when you need to change the schema.
-  static final _databaseVersion = 5;
+  static final _databaseVersion = 6;
 
   // Make this a singleton class.
   DatabaseHelper._privateConstructor();
@@ -123,29 +123,29 @@ class DatabaseHelper {
     int id;
 
     Map<String, dynamic> cropRow1 = {
-      columnCropName : 'Kukuruz',
-      columnExpectedIncomeByM2 : 1000
+      columnCropName : kukuruz,
+      columnExpectedIncomeByM2 : 1.2
     };
     id = await db.insert(tableCrop, cropRow1);
     debugPrint('Inserted crop: $cropRow1 with id: $id [_initCrops]');
 
     Map<String, dynamic> cropRow2 = {
-      columnCropName : 'Pšenica',
-      columnExpectedIncomeByM2 : 1200
+      columnCropName : psenica,
+      columnExpectedIncomeByM2 : 1
     };
     id = await db.insert(tableCrop, cropRow2);
     debugPrint('Inserted crop: $cropRow2 with id: $id [_initCrops]');
 
     Map<String, dynamic> cropRow3 = {
-      columnCropName : 'Rajčica',
-      columnExpectedIncomeByM2 : 975
+      columnCropName : rajcica,
+      columnExpectedIncomeByM2 : 1.4
     };
     id = await db.insert(tableCrop, cropRow3);
     debugPrint('Inserted crop: $cropRow3 with id: $id [_initCrops]');
 
     Map<String, dynamic> cropRow4 = {
-      columnCropName : 'Mrkva',
-      columnExpectedIncomeByM2 : 1100
+      columnCropName : mrkva,
+      columnExpectedIncomeByM2 : 1.3
     };
     id = await db.insert(tableCrop, cropRow4);
     debugPrint('Inserted crop: $cropRow4 with id: $id [_initCrops]');
@@ -154,55 +154,55 @@ class DatabaseHelper {
     debugPrint('Started _initActivityTypes [dbHelper]');
 
     Map<String, dynamic> actTypRow1 = {
-      columnActivityType : 'Obrada tla'
+      columnActivityType : obradaTla
     };
     id = await db.insert(tableActivityType, actTypRow1);
     debugPrint('Inserted activity type: $actTypRow1 with id: $id [_initActivityTypes]');
 
     Map<String, dynamic> actTypRow2 = {
-      columnActivityType : 'Gnojenje'
+      columnActivityType : gnojenje
     };
     id = await db.insert(tableActivityType, actTypRow2);
     debugPrint('Inserted activity type: $actTypRow2 with id: $id [_initActivityTypes]');
 
     Map<String, dynamic> actTypRow3 = {
-      columnActivityType : 'Sjetva'
+      columnActivityType : sjetva
     };
     id = await db.insert(tableActivityType, actTypRow3);
     debugPrint('Inserted activity type: $actTypRow3 with id: $id [_initActivityTypes]');
 
     Map<String, dynamic> actTypRow4 = {
-      columnActivityType : 'Sadnja'
+      columnActivityType : sadnja
     };
     id = await db.insert(tableActivityType, actTypRow4);
     debugPrint('Inserted activity type: $actTypRow4 with id: $id [_initActivityTypes]');
 
     Map<String, dynamic> actTypRow5 = {
-      columnActivityType : 'Prihranjivanje'
+      columnActivityType : prihranjivanje
     };
     id = await db.insert(tableActivityType, actTypRow5);
     debugPrint('Inserted activity type: $actTypRow5 with id: $id [_initActivityTypes]');
 
     Map<String, dynamic> actTypRow6 = {
-      columnActivityType : 'Njega'
+      columnActivityType : njega
     };
     id = await db.insert(tableActivityType, actTypRow6);
     debugPrint('Inserted activity type: $actTypRow6 with id: $id [_initActivityTypes]');
 
     Map<String, dynamic> actTypRow7 = {
-      columnActivityType : 'Berba'
+      columnActivityType : berba
     };
     id = await db.insert(tableActivityType, actTypRow7);
     debugPrint('Inserted activity type: $actTypRow7 with id: $id [_initActivityTypes]');
 
     Map<String, dynamic> actTypRow8 = {
-      columnActivityType : 'Prodaja'
+      columnActivityType : prodaja
     };
     id = await db.insert(tableActivityType, actTypRow8);
     debugPrint('Inserted activity type: $actTypRow8 with id: $id [_initActivityTypes]');
 
     Map<String, dynamic> actTypRow9 = {
-      columnActivityType : 'Dodatni troškovi'
+      columnActivityType : dodTroskovi
     };
     id = await db.insert(tableActivityType, actTypRow9);
     debugPrint('Inserted activity type: $actTypRow9 with id: $id [_initActivityTypes]');
@@ -212,25 +212,124 @@ class DatabaseHelper {
     debugPrint('Started _initActivities [dbHelper]');
 
     Map<String, dynamic> actRow1 = {
-      columnActivityType : 'Obrada tla',
-      columnCropName : 'Kukuruz',
+      columnActivityType : obradaTla,
+      columnCropName : kukuruz,
       columnStartDay : 0,
       columnRepeatTimes : 1,
       columnRepeatDays : 0,
-      columnExpenseByM2 : 30,
-      columnDescription : 'Treba delat i to samo jako nema pauze dok nije gotovo'
+      columnExpenseByM2 : 0,
+      columnDescription : 'Priprema tla za kukuruz šećerac jednaka je kao i za '
+      + 'kukuruz za zrno. Duboka jesensko-zimska obrada osigurava dobru strukturu'
+      + 'i zalihu vlage za proljetnu sjetvu. Kasniji usjevi mogu se sijati i nakon '
+      + 'ozimih i ranih proljetnih kultura. U tom slučaju zadovoljava pliće oranje '
+      + '(do 20 cm) uz dobru pripremu sjetvenog sloja.'
     };
     id = await db.insert(tableActivity, actRow1);
     debugPrint('Inserted activity: $actRow1 with id: $id [_initActivity]');
+
+    Map<String, dynamic> actRow2 = {
+      columnActivityType : gnojenje,
+      columnCropName : kukuruz,
+      columnStartDay : 0,
+      columnRepeatTimes : 3,
+      columnRepeatDays : 25,
+      columnExpenseByM2 : 0.04,
+      columnDescription : 'Dobro reagira na organsku gnojidbu. Na srednje opskrbljenom '
+      + 'tlu prije sjetve aplicira se 100 – 250 kg/ha dušika, 80 – 100 kg/ha fosfora i '
+      + '100 – 150 kg/ha kalija. Trećina dušika primjenjuje se u vrijeme sjetve, druga '
+      + 'trećina 30 dana nakon sjetve, a treća 50 dana nakon sjetve. Najveća potreba za '
+      + 'kalijem je u vrijeme razvoja klipa.'
+    };
+    id = await db.insert(tableActivity, actRow2);
+    debugPrint('Inserted activity: $actRow2 with id: $id [_initActivity]');
+
+    Map<String, dynamic> actRow3 = {
+      columnActivityType : sjetva,
+      columnCropName : kukuruz,
+      columnStartDay : 0,
+      columnRepeatTimes : 1,
+      columnRepeatDays : 0,
+      columnExpenseByM2 : 0.5,
+      columnDescription : 'U kontinentalnom području može početi sjetva u drugoj '
+      + 'polovici travnja, kada je temperatura tla na 5 cm dubine viša od 10 °C. '
+      + 'Budući da je dužina vegetacije do tehnološke zrelosti kraća, sijati se može '
+      + 'i kasnije, sve do sredine srpnja. Sije se na 3 – 5 cm dubine, ovisno o teksturi '
+      + 'tla, uz razmak redova 60 – 90 cm i razmak u redu 20 – 30 cm. Ovisno o razmaku '
+      + 'sjetve, krupnoći i klijavosti sjemena potrebno je 10 – 20 kg sjemena po hektaru.'
+    };
+    id = await db.insert(tableActivity, actRow3);
+    debugPrint('Inserted activity: $actRow3 with id: $id [_initActivity]');
+
+    Map<String, dynamic> actRow4 = {
+      columnActivityType : njega,
+      columnCropName : kukuruz,
+      columnStartDay : 14,
+      columnRepeatTimes : 1,
+      columnRepeatDays : 0,
+      columnExpenseByM2 : 0.05,
+      columnDescription : 'Za kukuruz šećerac koriste se isti herbicidi kao i '
+      + 'pri uzgoju kukuruza za zrno. Uz međurednu obradu prema potrebi korigira se '
+      + 'razmak biljaka u redu dok su biljke niže od 20 cm. Mjere zaštite od bolesti '
+      + 'i štetnika prvenstveno se odnose na uporabu zdravog sjemena, a protiv '
+      + 'kukuruznog moljca prednost imaju agrotehničke i biološke metode.'
+    };
+    id = await db.insert(tableActivity, actRow4);
+    debugPrint('Inserted activity: $actRow4 with id: $id [_initActivity]');
+
+    Map<String, dynamic> actRow5 = {
+      columnActivityType : berba,
+      columnCropName : kukuruz,
+      columnStartDay : 999,
+      columnRepeatTimes : 100,
+      columnRepeatDays : 0,
+      columnExpenseByM2 : 0,
+      columnDescription : 'Tehnološka zrelost kukuruza nastupa oko 20 dana nakon '
+      + 'oplodnje. Zrna su potpuno formirana, a među redovima nema nikakva međuprostora. '
+      + 'Komušina čvrsto prillježe uz klip, a svila sasvim posmeđi i gotovo se sasuši. '
+      + 'Na pritisak među prstima iz zrna izlazi mliječni sok. Kukuruz šećerac za '
+      + 'tržište najbolje je brati rano ujutro, dok je još niža temperatura i odmah '
+      + 'ga otpremiti u zaklon. Da se sačuva početna kvaliteta, dobro je pothladiti '
+      + 'ga ledenom vodom.'
+    };
+    id = await db.insert(tableActivity, actRow5);
+    debugPrint('Inserted activity: $actRow5 with id: $id [_initActivity]');
+
+    Map<String, dynamic> actRow6 = {
+      columnActivityType : prodaja,
+      columnCropName : kukuruz,
+      columnStartDay : 1000,
+      columnRepeatTimes : 100,
+      columnRepeatDays : 0,
+      columnExpenseByM2 : 0,
+      columnDescription : 'Pomoću ove aktivnosti bilježite troškove, zaradu od ' +
+      'prodaje i prodanu količinu plodova. Ukoliko morate iz nekog razloga (npr bolest) ' +
+      'baciti dio ubranog ploda, koristite ovu aktivnost (zaradu postavite na nula).'
+    };
+    id = await db.insert(tableActivity, actRow6);
+    debugPrint('Inserted activity: $actRow6 with id: $id [_initActivity]');
+
+    Map<String, dynamic> actRow7 = {
+      columnActivityType : dodTroskovi,
+      columnCropName : kukuruz,
+      columnStartDay : 1001,
+      columnRepeatTimes : 100,
+      columnRepeatDays : 0,
+      columnExpenseByM2 : 0,
+      columnDescription : 'Ova aktivnost služi za praćenje svih očekivanih i ' +
+      'neočekivanih dodatnih troškova (npr. troškovi na vodu, dodatnu njegu, benzin, '
+      + 'dodatne alate...).'
+    };
+    id = await db.insert(tableActivity, actRow7);
+    debugPrint('Inserted activity: $actRow7 with id: $id [_initActivity]');
 
     // TODO: complete init
     // _initTools();
 
     Map<String, dynamic> toolRow1 = {
       columnToolName : 'Lopata',
-      columnCropName : 'Kukuruz',
-      columnActivityType : 'Obrada tla',
-      columnToolPrice : 200
+      columnCropName : kukuruz,
+      columnActivityType : obradaTla,
+      columnToolPrice : 350
     };
     id = await db.insert(tableTool, toolRow1);
     debugPrint('Inserted tool: $toolRow1 with id: $id [_initTools]');
@@ -522,4 +621,21 @@ class DatabaseHelper {
 // final String columnIncome = 'income';
   final String columnExpense = 'expense';
   final String columnQuantity = 'quantity';
+
+  // Crop names
+  final String kukuruz = 'Kukuruz';
+  final String mrkva = 'Mrkva';
+  final String psenica = 'Pšenica';
+  final String rajcica = 'Rajčica';
+
+  // Activity types
+  final String obradaTla = 'Obrada tla';
+  final String gnojenje = 'Gnojenje';
+  final String sjetva = 'Sjetva';
+  final String sadnja = 'Sadnja';
+  final String prihranjivanje = 'Prihranjivanje';
+  final String njega = 'Njega';
+  final String berba = 'Berba';
+  final String prodaja = 'Prodaja';
+  final String dodTroskovi = 'Dodatni troškovi';
 }

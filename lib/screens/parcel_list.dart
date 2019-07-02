@@ -53,7 +53,9 @@ class ParcelListState extends State<ParcelList> {
                 debugPrint('Parcela u item builderu: [parcel_list]\n' +
                     listedParcel.toString());
                 return ListTile(
-                    title: Text(listedParcel.parcelName),
+                    title: Text(
+                        listedParcel.parcelName,
+                        style: TextStyle(fontSize: 16.0)),
                     onTap: () {
                       navigateToParcelDetail(
                           listedParcel, listedParcel.parcelName);

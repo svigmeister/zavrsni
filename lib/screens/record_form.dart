@@ -121,33 +121,9 @@ class RecordFormState extends State<RecordForm> {
               },
             ),
           ),
-          Padding(
-            padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
-            child: TextFormField(
-              controller: incomeController,
-              style: textStyle,
-              decoration: InputDecoration(
-                  labelText: 'Zarada',
-                  labelStyle: textStyle,
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(4.5))),
-              onEditingComplete: () {
-                updateIncome();
-              },
-              validator: (value) {
-                RegExp numRegex = new RegExp(r'^[0-9]+(\.[0-9]+)?$');
-                if (value.isEmpty) {
-                  return 'Unesite iznos zarade!';
-                }
-                if (!numRegex.hasMatch(value)) {
-                  return 'Unesite brojčanu vrijednost (za decimalni zapis koristite točku)!';
-                }
-                if (double.parse(value) < 0) {
-                  return 'Unesite pozitivan iznos!';
-                }
-              },
-            ),
-          ),
+
+          // Dynamic view, show income field only for sell activity
+          showIncomeInput(textStyle),
 
           // Dynamic view, show quantity field only for some activities/records
           showQuantityInput(textStyle),
@@ -202,9 +178,40 @@ class RecordFormState extends State<RecordForm> {
             updateQuantity();
           },
           validator: (value) {
-            RegExp numRegex = new RegExp(r'^[0-9]+(\.[0-9]+)?$');
+            RegExp numRegex = new RegExp(r'^[-]?[0-9]+(\.[0-9]+)?$');
             if (value.isEmpty) {
               return 'Unesite iznos količine!';
+            }
+            if (!numRegex.hasMatch(value)) {
+              return 'Unesite brojčanu vrijednost (za decimalni zapis koristite točku)!';
+            }
+          },
+        ),
+      );
+    } else {
+      return Padding(padding: EdgeInsets.all(1.0));
+    }
+  }
+
+  Widget showIncomeInput(TextStyle ts) {
+    if(record.activityType == 'Prodaja') {
+      return Padding(
+        padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
+        child: TextFormField(
+          controller: incomeController,
+          style: ts,
+          decoration: InputDecoration(
+              labelText: 'Zarada',
+              labelStyle: ts,
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(4.5))),
+          onEditingComplete: () {
+            updateIncome();
+          },
+          validator: (value) {
+            RegExp numRegex = new RegExp(r'^[0-9]+(\.[0-9]+)?$');
+            if (value.isEmpty) {
+              return 'Unesite iznos zarade!';
             }
             if (!numRegex.hasMatch(value)) {
               return 'Unesite brojčanu vrijednost (za decimalni zapis koristite točku)!';

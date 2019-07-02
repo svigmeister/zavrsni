@@ -13,7 +13,12 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
           primaryColor: Colors.brown[600],
-          cardColor: Colors.blue[200]
+          cardColor: Colors.blue[200],
+          textTheme: TextTheme(
+              headline: TextStyle(fontSize: 22.0),
+              title: TextStyle(fontSize: 20.0),
+              body1: TextStyle(fontSize: 16.0)
+          )
       ),
       home: ParcelList(),
     );
