@@ -6,15 +6,18 @@ class Parcel {
   String _crop;
   String _startTime;
   double _expectedExpense;
+  double _expectedIncome;
   double _income;
   double _totalQuantity;
   double _currentQuantity;
 
   Parcel(this._parcelName, this._m2, this._crop, this._startTime,
-      [this._expectedExpense, this._income, this._totalQuantity, this._currentQuantity]);
+      [this._expectedExpense, this._expectedIncome, this._income,
+        this._totalQuantity, this._currentQuantity]);
 
   Parcel.withId(this._id, this._parcelName, this._m2, this._crop, this._startTime,
-      [this._expectedExpense, this._income, this._totalQuantity, this._currentQuantity]);
+      [this._expectedExpense, this._expectedIncome, this._income,
+        this._totalQuantity, this._currentQuantity]);
 
   int get id => _id;
   String get parcelName => _parcelName;
@@ -22,6 +25,7 @@ class Parcel {
   String get crop => _crop;
   String get startTime => _startTime;
   double get expectedExpense => _expectedExpense;
+  double get expectedIncome => _expectedIncome;
   double get income => _income;
   double get totalQuantity => _totalQuantity;
   double get currentQuantity => _currentQuantity;
@@ -40,6 +44,9 @@ class Parcel {
   }
   set expectedExpense(nExpEx) {
     this._expectedExpense = nExpEx;
+  }
+  set expectedIncome(nExpInc) {
+    this._expectedIncome = nExpInc;
   }
   set income(nIncome) {
     this._income = nIncome;
@@ -62,6 +69,7 @@ class Parcel {
     map['crop'] = _crop;
     map['startTime'] = _startTime;
     map['expectedExpense'] = _expectedExpense;
+    map['expectedIncome'] = _expectedIncome;
     map['income'] = _income;
     map['totalQuantity'] = _totalQuantity;
     map['currentQuantity'] = _currentQuantity;
@@ -76,6 +84,7 @@ class Parcel {
     this._crop = map['crop'];
     this._startTime = map['startTime'];
     this._expectedExpense = map['expectedExpense'];
+    this._expectedIncome = map['expectedIncome'];
     this._income = map['income'];
     this._totalQuantity = map['totalQuantity'];
     this._currentQuantity = map['currentQuantity'];
@@ -86,7 +95,8 @@ class Parcel {
     return '_Id parcele: ' + this.id.toString() + '\nIme parcele: ' + this.parcelName
         + '\nPovršina: ' + this.m2.toString() + '\nUsjev: ' + this.crop
         + '\nPočetak radova: ' + this.startTime + '\nOčekivani troškovi: '
-        + this.expectedExpense.toStringAsPrecision(2) + '\nZarada: '
+        + this.expectedExpense.toStringAsPrecision(2) + '\nOčekivana zarada: '
+        + this.expectedIncome.toStringAsPrecision(2) + '\nZarada: '
         + this.income.toStringAsPrecision(2) + '\nTotalna dobivena količina: '
         + this.totalQuantity.toStringAsPrecision(2) + '\nTreuntna količina: '
         + this.currentQuantity.toStringAsPrecision(2);

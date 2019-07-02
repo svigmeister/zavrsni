@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../models/parcel.dart';
 import '../models/activity.dart';
 import '../models/tool.dart';
+import '../models/crop.dart';
 import '../utils/database_helper.dart';
 
 // Create a Form Widget
@@ -212,9 +213,6 @@ class ParcelFormState extends State<ParcelForm> {
   void _saveParcel(Parcel parcelToSave) async {
     debugPrint('Entered _saveParcel method [parcel_form]');
     DatabaseHelper dbHelper = DatabaseHelper.instance;
-    if (parcelToSave.expectedExpense == null) {
-      parcelToSave.expectedExpense = 0.0;
-    }
     if (parcelToSave.income == null) {
       parcelToSave.income = 0.0;
     }
@@ -223,6 +221,13 @@ class ParcelFormState extends State<ParcelForm> {
     }
     if (parcelToSave.totalQuantity == null) {
       parcelToSave.totalQuantity = 0.0;
+    }
+    if (parcelToSave.expectedExpense == null) {
+      parcelToSave.expectedExpense = 0.0;
+    }
+    if (parcelToSave.expectedIncome == null) {
+      Crop parcelCrop = await dbHelper.getParcelCrop(parcelToSave);
+      parcelToSave.expectedIncome = (parcelCrop.expectedIncomeByM2 * parcelToSave.m2);
     }
 
     List<Activity> parcelCropActivities = await dbHelper.getCropActivities(parcelToSave.crop);

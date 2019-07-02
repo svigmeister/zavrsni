@@ -67,7 +67,11 @@ class RecordDetailState extends State<RecordDetail> {
       ),
       Padding(
           padding: EdgeInsets.all(4.0),
-          child: Text(record.expense.toStringAsFixed(2) + ' HRK')
+          child: RichText(
+              text: TextSpan(
+                  text: record.expense.toStringAsFixed(2) + ' HRK',
+                  style: TextStyle(color: Colors.red)
+              ))
       ),
       Padding(
           padding: EdgeInsets.all(4.0),
@@ -75,7 +79,11 @@ class RecordDetailState extends State<RecordDetail> {
       ),
       Padding(
           padding: EdgeInsets.all(4.0),
-          child: Text(record.income.toStringAsFixed(2) + ' HRK')
+          child: RichText(
+              text: TextSpan(
+                  text: record.income.toStringAsFixed(2) + ' HRK',
+                  style: TextStyle(color: Colors.green)
+              ))
       ),
 
       // Dynamic view, show quantity info only for some records

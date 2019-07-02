@@ -5,13 +5,13 @@ Widget doubleToColouredText(double money) {
   if (money < 0) {
     return RichText(
         text: TextSpan(
-            text: money.toStringAsFixed(2),
+            text: money.toStringAsFixed(2) + ' HRK',
             style: TextStyle(color: Colors.red)
         ));
   } else {
     return RichText(
         text: TextSpan(
-            text: money.toStringAsFixed(2),
+            text: money.toStringAsFixed(2) + ' HRK',
             style: TextStyle(color: Colors.green)
         ));
   }

@@ -51,6 +51,7 @@ class DatabaseHelper {
                 $columnCrop TEXT NOT NULL,
                 $columnStartTime TEXT NOT NULL,
                 $columnExpectedExpense REAL,
+                $columnExpectedIncome REAL,
                 $columnIncome REAL,
                 $columnTotalQuantity REAL,
                 $columnCurrentQuantity REAL,
@@ -74,7 +75,8 @@ class DatabaseHelper {
     await db.execute('''
               CREATE TABLE $tableCrop (
                 $columnCropId INTEGER PRIMARY KEY AUTOINCREMENT,
-                $columnCropName TEXT NOT NULL UNIQUE
+                $columnCropName TEXT NOT NULL UNIQUE,
+                $columnExpectedIncomeByM2 REAL
               )
               ''');
     await db.execute('''
@@ -115,30 +117,35 @@ class DatabaseHelper {
               )
               ''');
 
+    // These are not actual 'TODOs', it's here just to find init areas faster
     // TODO: _initCrops();
     debugPrint('Started _initCrops [dbHelper]');
     int id;
 
     Map<String, dynamic> cropRow1 = {
-      columnCropName : 'Kukuruz'
+      columnCropName : 'Kukuruz',
+      columnExpectedIncomeByM2 : 1000
     };
     id = await db.insert(tableCrop, cropRow1);
     debugPrint('Inserted crop: $cropRow1 with id: $id [_initCrops]');
 
     Map<String, dynamic> cropRow2 = {
-      columnCropName : 'Pšenica'
+      columnCropName : 'Pšenica',
+      columnExpectedIncomeByM2 : 1200
     };
     id = await db.insert(tableCrop, cropRow2);
     debugPrint('Inserted crop: $cropRow2 with id: $id [_initCrops]');
 
     Map<String, dynamic> cropRow3 = {
-      columnCropName : 'Rajčica'
+      columnCropName : 'Rajčica',
+      columnExpectedIncomeByM2 : 975
     };
     id = await db.insert(tableCrop, cropRow3);
     debugPrint('Inserted crop: $cropRow3 with id: $id [_initCrops]');
 
     Map<String, dynamic> cropRow4 = {
-      columnCropName : 'Mrkva'
+      columnCropName : 'Mrkva',
+      columnExpectedIncomeByM2 : 1100
     };
     id = await db.insert(tableCrop, cropRow4);
     debugPrint('Inserted crop: $cropRow4 with id: $id [_initCrops]');
@@ -329,6 +336,17 @@ class DatabaseHelper {
     return cropList;
   }
 
+  // Returns Crop object tied to the given parcel
+  Future<Crop> getParcelCrop(Parcel parcel) async {
+    debugPrint('Entered getParcelCrop [dbHelper]');
+    Database db = await instance.database;
+    String cropName = parcel.crop;
+    String sql = 'SELECT * FROM $tableCrop WHERE $columnCropName = ?';
+    List<Map<String, dynamic>> queryResult = await db.rawQuery(sql, [cropName]);
+    Crop crop = Crop.fromMap(queryResult[0]);
+    return crop;
+  }
+
   // ActivityTypes
 
   // Inserts a row in the database where each key in the Map is a column name
@@ -465,6 +483,7 @@ class DatabaseHelper {
   final String columnCrop = 'crop';
   final String columnStartTime = 'startTime';
   final String columnExpectedExpense = 'expectedExpense';
+  final String columnExpectedIncome = 'expectedIncome';
   final String columnIncome = 'income';
   final String columnTotalQuantity = 'totalQuantity';
   final String columnCurrentQuantity = 'currentQuantity';
@@ -479,6 +498,7 @@ class DatabaseHelper {
   final String tableCrop = 'crop';
   final String columnCropId = '_id';
 // final String columnCropName = 'cropName';
+  final String columnExpectedIncomeByM2 = 'expectedIncomeByM2';
 
   final String tableActivity = 'activity';
   final String columnActivityId = '_id';

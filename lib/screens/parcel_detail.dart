@@ -7,6 +7,7 @@ import '../screens/parcel_form.dart';
 import '../screens/record_list.dart';
 import '../screens/activity_list.dart';
 import '../utils/database_helper.dart';
+import '../utils/decorations.dart';
 
 // Create a Widget
 class ParcelDetail extends StatefulWidget {
@@ -78,15 +79,31 @@ class ParcelDetailState extends State<ParcelDetail> {
       ),
       Padding(
           padding: EdgeInsets.all(4.0),
-          child: Text(parcel.expectedExpense.toStringAsFixed(2) + ' HRK')
+          child: RichText(
+              text: TextSpan(
+                  text: parcel.expectedExpense.toStringAsFixed(2) + ' HRK',
+                  style: TextStyle(color: Colors.red)
+              ))
       ),
       Padding(
           padding: EdgeInsets.all(4.0),
-          child: Text('Ukupna zarada:')
+          child: Text('Očekivana zarada:')
       ),
       Padding(
           padding: EdgeInsets.all(4.0),
-          child: Text(parcel.income.toStringAsFixed(2) + ' HRK')
+          child: RichText(
+              text: TextSpan(
+                  text: parcel.expectedIncome.toStringAsFixed(2) + ' HRK',
+                  style: TextStyle(color: Colors.green)
+              ))
+      ),
+      Padding(
+          padding: EdgeInsets.all(4.0),
+          child: Text('Trenutna zarada:')
+      ),
+      Padding(
+          padding: EdgeInsets.all(4.0),
+          child: doubleToColouredText(parcel.income)
       ),
       Padding(
           padding: EdgeInsets.all(4.0),

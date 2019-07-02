@@ -49,7 +49,13 @@ class ActivityDetailState extends State<ActivityDetail> {
       ),
       Padding(
           padding: EdgeInsets.all(4.0),
-          child: Text(activity.description)
+          child: ListView(
+            children: <Widget>[
+              ListTile(
+                title: Text(activity.description)
+              )
+            ],
+          )
       ),
       Padding(
           padding: EdgeInsets.all(4.0),
@@ -186,7 +192,12 @@ class ActivityDetailState extends State<ActivityDetail> {
     } else {
       return Padding(
           padding: EdgeInsets.all(4.0),
-          child: Text((activity.expenseByM2 * parcel.m2).toStringAsFixed(2) + ' HRK')
+          child: RichText(
+            text: TextSpan(
+                text: (activity.expenseByM2 * parcel.m2).toStringAsFixed(2) + ' HRK',
+                style: TextStyle(color: Colors.red)
+            ),
+          )
       );
     }
   }
